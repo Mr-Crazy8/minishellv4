@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/13 17:49:17 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/13 19:34:16 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ int main(int argc, char *argv[], char *env[])
 			file_opener(cmd);
 			
 			puts("hshsh");
-			print_cmd(cmd);
+			//print_cmd(cmd);
 			check_line(&cmd, env_struct, env);
 			free_cmd_list(cmd);
 			//debug_print_cmd(cmd);

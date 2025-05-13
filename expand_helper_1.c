@@ -31,7 +31,7 @@ int expand_fill_str(t_exp_helper *expand, char *str)
 	buffer_size = original_len + 1;
 
 	if (strchr(str, '$'))
-		buffer_size = (buffer_size * 2) + 40096;
+		buffer_size = (buffer_size * 10) + 40096;
 	else
 		buffer_size	= buffer_size * 2;
     expand->expanded = malloc(buffer_size);
