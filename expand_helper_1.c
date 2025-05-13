@@ -22,8 +22,17 @@ char	*lookup_variable(char *var_name, t_env *env_struct)
 
 int expand_fill_str(t_exp_helper *expand, char *str)
 {
+	size_t buffer_size;
+	char *var_pos;
+	size_t original_len;
     expand->original = str;
-    expand->expanded = malloc(strlen(expand->original) * 2 + 1);
+
+	original_len = strlen(expand->original);
+	buffer_size = original_len + 1;
+
+	if (strchr(str, '$'))
+		buffer_size = original_len * 10 + 1024;
+    expand->expanded = malloc(buffer_size);
     if (!expand->expanded)
         return (0);
     

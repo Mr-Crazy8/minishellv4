@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayoakouh <ayoakouh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/12 19:02:13 by ayoakouh         ###   ########.fr       */
+/*   Updated: 2025/05/13 16:35:45 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,9 @@ int main(int argc, char *argv[], char *env[])
 			ambiguous_finder(cmd);
 			process_quotes_for_cmd(cmd, 1);
 			file_opener(cmd);
+			
 			puts("hshsh");
+			print_cmd(cmd);
 			check_line(&cmd, env_struct, env);
 			//debug_print_cmd(cmd);
 			if (cmd == NULL) {

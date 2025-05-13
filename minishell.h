@@ -87,7 +87,7 @@ typedef struct s_exp_helper {
 
 
 void process_redir_helper(char str, int *quote_state);
-
+void print_cmd(t_cmd *cmd_list);
 t_cmd *parse_tokens(t_token *token_list);
 int open_file(int type, char *file);
 
