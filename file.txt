@@ -1,0 +1,69 @@
+
+export $NOTHERE $HOME
+ls > out | cat
+cat >out | < ls // i dont know;
+
+
+
+
+bash-3.2$ cd 1 | cd -
+bash: cd: OLDPWD not set
+bash-3.2$
+
+
+
+
+minishell $> cd 1
+minishell: cd: HOME not set
+1
+minishell $> 
+
+
+export key=value // value should never be split, only in an invalid identifier case, and when key is quoted
+
+export a="k l n"
+
+
+
+export "" "";;
+export 
+
+
+
+echo q w e r t  >> t | echo q w e r t >> t ..........
+
+
+minishell $> unset PWD OLDPWD
+0
+minishell $> cd
+zsh: segmentation fault  ./minishell;;;;
+
+
+
+
+ayoakouh@e3r9p3 ft_clone % env -i ./minishell
+minishell $> unset PATH;;
+
+/
+//
+
+env env env env env env env env env env;;
+
+
+env | grep hola;;
+
+export -HOLA;;
+
+export a==================l;
+for export and env ;;;
+
+ unset PATH
+ ls
+
+ page 13;;;
+ 
+
+ unset $SHELVL $PWD $PATH $_
+
+
+cd 3ndi mochkil fe exit status ;;;

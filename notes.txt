@@ -1,0 +1,30 @@
+export var="ls -la" // "ls -la" splited, it should not.
+export  j="" //  -> j=""""
+
+
+//************************************
+
+cat < input.txt  // this redrecte inpute from file in stdout;
+Symbol	Purpose
+<	Redirect input from a file;
+>	Redirect output to a file (overwrite);
+<<	Read input until a specific delimiter(herdoc);
+>>	Redirect output to a file (append); >>>>>> example :
+...... example:
+
+# 1. Input redirection>>>>
+cat < input.txt
+
+# 2. Output redirection (overwrite)>>>>>>
+echo "Hello, Bash!" > output.txt
+
+# 3. Append output (append mode)>>>>>>
+echo "Appending this line." >> output.txt
+
+# 4. Heredoc example>>>>>
+cat << DELIMITER
+This is input from a heredoc.
+It will stop when the word DELIMITER is encountered.
+DELIMITER
+minishell $> < l
+zsh: segmentation fault  ./minishell
