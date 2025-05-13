@@ -178,6 +178,7 @@ char *ft_itoa(int n);
 void free_cmd_list(t_cmd *cmd_list);
 void	free_token_list(t_token *token_list);
 /// HNa 
+void ensure_buffer_capacity(t_exp_helper *expand, size_t additional_size);
 
 char	*ft_strchr(char *s, int c);
 char	**ft_split(char const *s, char c);
@@ -187,7 +188,7 @@ void	ft_lstadd_back(t_env **lst, t_env *new);
 char    *ft_substr(char const *s, unsigned int start, size_t len);
 void apply_word_splitting(t_cmd *cmd_list);
 // int expand_fill_str(t_exp_helper *expand, char *str);
-int expand_fill_str(t_exp_helper *expand, char *str, t_env *env_struct);
+int expand_fill_str(t_exp_helper *expand, char *str);
 char	**free_split(char **split, size_t j);
 void	ft_lstadd_back_env(t_env **lst, t_env *new);
 int    echo(char **argv);
@@ -338,6 +339,7 @@ void ft(char **args, t_env **list);
 // void split_args_for_cmd(t_cmd *cmd_list);
 // void apply_word_splitting(t_cmd *cmd_list);
 // void print_file_error(char *file, int i);
+
 #endif
     
     

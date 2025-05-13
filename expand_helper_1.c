@@ -20,22 +20,27 @@ char	*lookup_variable(char *var_name, t_env *env_struct)
 
 
 
-int expand_fill_str(t_exp_helper *expand, char *str, t_env *env_struct)
+int expand_fill_str(t_exp_helper *expand, char *str)
 {
 	size_t buffer_size;
 	char *var_pos;
 	size_t original_len;
-	t_env *tmp = env_struct;
     expand->original = str;
 
 	original_len = strlen(expand->original);
 	buffer_size = original_len + 1;
-	buffer_size	= (original_len) * 3;
+
+	if (strchr(str, '$'))
+		buffer_size = (buffer_size * 2) + 40096;
+	else
+		buffer_size	= buffer_size * 2;
     expand->expanded = malloc(buffer_size);
     if (!expand->expanded)
         return (0);
+    
     expand->i = 0;
     expand->j = 0;
     expand->quote_state = 0;
+    
     return (1);
 }

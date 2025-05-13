@@ -1,5 +1,28 @@
 #include "minishell.h"
 
+void ensure_buffer_capacity(t_exp_helper *expand, size_t additional_size)
+{
+    static size_t buffer_size = 0;
+
+    // Check if the buffer needs to be resized
+    if (expand->j + additional_size >= buffer_size)
+    {
+        // Double the buffer size or allocate at least enough space
+        buffer_size = (buffer_size + additional_size) * 2;
+        expand->expanded = realloc(expand->expanded, buffer_size);
+
+        if (!expand->expanded)
+        {
+            perror("Reallocation failed");
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+
+
+
+
+
 int	expand_handle_helper0(t_exp_helper *expand)
 {
 	if (expand->original[expand->i] == '\'')
@@ -8,7 +31,9 @@ int	expand_handle_helper0(t_exp_helper *expand)
 			expand->quote_state = 1;
 		else if (expand->quote_state == 1)
 			expand->quote_state = 0;
-		expand->expanded[expand->j++] = expand->original[expand->i++];
+		expand->expanded[expand->j] = expand->original[expand->i];
+        expand->j++;
+        expand->i++;
 		return (1);
 	}
 	else if (expand->original[expand->i] == '"')
@@ -18,6 +43,8 @@ int	expand_handle_helper0(t_exp_helper *expand)
 		else if (expand->quote_state == 2)
 			expand->quote_state = 0;
 		expand->expanded[expand->j++] = expand->original[expand->i++];
+        expand->j++;
+        expand->i++;
 		return (1);
 	}
 	return (0);
@@ -54,7 +81,11 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env)
         }
         expand->k = 0;
         while (expand->var_value && expand->var_value[expand->k])
-            expand->expanded[expand->j++] = expand->var_value[expand->k++];
+        {
+            expand->expanded[expand->j] = expand->var_value[expand->k];
+            expand->j++;
+            expand->i++;
+        }
         free(expand->var_value);
         return (1);
     }
@@ -64,13 +95,15 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env)
 void process_string(char *str, t_exp_helper *expand,
                    t_env *env, int exit_status)
 {
-    if (!expand_fill_str(expand, str, env))
+    if (!expand_fill_str(expand, str))
         return;
     
     while (expand->original[expand->i]) {
         if (!expand_handle_helper0(expand)
             && !expand_handle_helper1(expand, exit_status, env))
-            expand->expanded[expand->j++] = expand->original[expand->i++];
+            expand->expanded[expand->j] = expand->original[expand->i];
+            expand->j++;
+            expand->i++;
     }
     expand->expanded[expand->j] = '\0';
 }
