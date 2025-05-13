@@ -64,7 +64,7 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env)
 void process_string(char *str, t_exp_helper *expand,
                    t_env *env, int exit_status)
 {
-    if (!expand_fill_str(expand, str))
+    if (!expand_fill_str(expand, str, env))
         return;
     
     while (expand->original[expand->i]) {

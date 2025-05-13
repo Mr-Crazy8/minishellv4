@@ -157,6 +157,7 @@ int ft_handel_export(char **str, t_env **lst)
             continue;
         }
         value = get_value(str[i]);
+        printf("key =====> %s value ========> %s\n", key, value);
         if((ft_strchr(str[i], '=') == NULL))
         {
            if (ft_check(*lst, key) == 1)
@@ -183,6 +184,8 @@ int ft_handel_export(char **str, t_env **lst)
     } 
     return (status);
 }
+
+
 void envermont_null(t_env **list)
 {
     ft_lstadd_back(list, creat_new_env("OLDPWD", NULL));

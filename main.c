@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/13 16:35:45 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:49:17 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,7 @@ int main(int argc, char *argv[], char *env[])
 			puts("hshsh");
 			print_cmd(cmd);
 			check_line(&cmd, env_struct, env);
+			free_cmd_list(cmd);
 			//debug_print_cmd(cmd);
 			if (cmd == NULL) {
 				printf("Warning: Command list is empty after parsing!\n");
@@ -171,7 +172,6 @@ int main(int argc, char *argv[], char *env[])
 		}   
 		free_token_list(token_list);
 		// free(input);
-		// free_cmd_list(cmd);
 	}
 	free_env_struct(env_struct);
 	return 0;
