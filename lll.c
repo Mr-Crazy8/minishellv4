@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lll.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayoakouh <ayoakouh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 15:22:58 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/12 18:55:31 by ayoakouh         ###   ########.fr       */
+/*   Updated: 2025/05/14 12:55:19 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void ft(char **args, t_env **list) // pipe moust be check and access;;;;*
         exit(127);
     }        
 }
+
 void    pipe_all(t_cmd *head)
 {
     t_cmd *cmd = head;

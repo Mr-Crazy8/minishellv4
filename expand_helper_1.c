@@ -18,7 +18,29 @@ char	*lookup_variable(char *var_name, t_env *env_struct)
 	return (ft_strdup(""));
 }
 
-
+// // Add this function to expand_helper_1.c
+// int expand_resize_buffer(t_exp_helper *expand, size_t needed_size)
+// {
+//     // Calculate new size (double the current size or ensure it fits the needed size)
+//     size_t new_size = expand->buffer_size * 3;
+//     if (new_size < needed_size)
+//         new_size = needed_size;
+    
+//     // Allocate new buffer
+//     char *new_buffer = malloc(new_size);
+//     if (!new_buffer)
+//         return (0);
+    
+//     // Copy existing content to new buffer
+//     memcpy(new_buffer, expand->expanded, expand->j);
+    
+//     // Free old buffer and update pointer and size
+//     free(expand->expanded);
+//     expand->expanded = new_buffer;
+//     expand->buffer_size = new_size;
+    
+//     return (1);
+// }
 
 int expand_fill_str(t_exp_helper *expand, char *str)
 {
@@ -28,16 +50,15 @@ int expand_fill_str(t_exp_helper *expand, char *str)
     expand->original = str;
 
 	original_len = strlen(expand->original);
-	buffer_size = original_len + 1;
+	buffer_size = original_len * 2;
 
-	if (strchr(str, '$'))
-		buffer_size = (buffer_size * 10) + 40096;
-	else
-		buffer_size	= buffer_size * 2;
-    expand->expanded = malloc(buffer_size);
+
+
+    expand->expanded = malloc((strlen(str) * 10) + 1024);
     if (!expand->expanded)
         return (0);
     
+	// expand->buffer_size = buffer_size;
     expand->i = 0;
     expand->j = 0;
     expand->quote_state = 0;

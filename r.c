@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   r.c                                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayoakouh <ayoakouh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:33:44 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/11 14:09:41 by ayoakouh         ###   ########.fr       */
+/*   Updated: 2025/05/14 13:06:05 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,11 +112,19 @@ void ft_excute_commands(t_cmd *cmd, t_env **env_list)
     if(ft_strchr(cmd->args[0], '/'))
         handle_absolute_path(cmd, env_doble);
     path = check_path(env_list);
-    if(!path)
-    {
-        write(2, "PATH not found\n", 15);
-        return;
-    }
+    // if(!path)
+    // {
+    //         puts("No Path");
+    //     if( access(cmd->args[0] , X_OK | F_OK) == 0 )
+    //     {
+    //         puts("OK");
+    //         execve(cmd->args[0], cmd->args, env_list);
+    //         perror("exc-> ");
+    //         return ;
+    //     }
+    //     write(2, "PATH not found\n", 15);
+    //     return;
+    // }
     split_path = ft_split(path, ':');
     if (!split_path)
         return ;

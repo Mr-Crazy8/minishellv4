@@ -23,6 +23,33 @@ int	expand_handle_helper0(t_exp_helper *expand)
 	}
 	return (0);
 }
+int ensure_buffer_space(t_exp_helper *expand, size_t additional_needed)
+{
+    static size_t current_size = 0;
+    
+    // First call - initialize current_size
+    if (current_size == 0)
+        current_size = strlen(expand->original) * 10 + 1024;
+    
+    // Check if we need more space
+    if (expand->j + additional_needed >= current_size)
+    {
+        // Double the current size or add enough for the new string
+        size_t new_size = current_size * 2;
+        if (new_size < expand->j + additional_needed + 1)
+            new_size = expand->j + additional_needed + 1024; // Extra padding
+        
+        // Reallocate the buffer
+        char *new_buffer = (char *)realloc(expand->expanded, new_size);
+        if (!new_buffer)
+            return (0); // Reallocation failed
+        
+        expand->expanded = new_buffer;
+        current_size = new_size;
+    }
+    
+    return (1);
+}
 
 int	helper3(t_exp_helper *expand, int exit_status)
 {
@@ -52,15 +79,41 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env)
             expand->var_name[expand->i - expand->start] = '\0';
             expand->var_value = lookup_variable(expand->var_name, env);
             free(expand->var_name);
+            expand->var_name = NULL;
         }
-        expand->k = 0;
-        while (expand->var_value && expand->var_value[expand->k])
-        {
-            expand->expanded[expand->j] = expand->var_value[expand->k]; //========> WTF
-            expand->j++;
-            expand->k++;
-        }
+
+
+        // expand->k = 0;
+        // while (expand->var_value && expand->var_value[expand->k])
+        // {
+        //     expand->expanded[expand->j] = expand->var_value[expand->k]; //========> WTF
+        //     expand->j++;
+        //     expand->k++;
+        // }
+        
+      if (expand->var_value)
+    {
+    size_t len = strlen(expand->var_value);
+    
+    // Ensure we have enough space
+    if (!ensure_buffer_space(expand, len))
+    {
         free(expand->var_value);
+        expand->var_value = NULL;
+        return (0); // Buffer resize failed
+    }
+    
+    // Now it's safe to use memcpy
+    memcpy(expand->expanded + expand->j, expand->var_value, len);
+    expand->j += len;
+    }
+        
+        // Free the var_value and return
+        if (expand->var_value)
+        {
+            free(expand->var_value);
+            expand->var_value = NULL;
+        }
         return (1);
     }
     return (0);
@@ -72,11 +125,18 @@ void process_string(char *str, t_exp_helper *expand,
     if (!expand_fill_str(expand, str))
         return;
     
-    while (expand->original[expand->i]) {
+    while (expand->original[expand->i])
+    {
         if (!expand_handle_helper0(expand)
             && !expand_handle_helper1(expand, exit_status, env))
-            expand->expanded[expand->j++] = expand->original[expand->i++];
+         {
+            expand->expanded[expand->j] = expand->original[expand->i];
+            expand->j++;
+            expand->i++;
+        }
+
     }
+
     expand->expanded[expand->j] = '\0';
 }
 

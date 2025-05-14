@@ -242,7 +242,7 @@ char **convert_env_list(t_env **list);
 void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[]);
 t_env *creat_new_env(char *key, char *value);
 void ft(char **args, t_env **list);
-
+int expand_resize_buffer(t_exp_helper *expand);
 
 // void	remove_quotes_from_tokens(t_token *token_list);
 // char	*remove_quotes(char *str);

@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/13 19:34:16 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/14 15:38:51 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ int main(int argc, char *argv[], char *env[])
 			process_quotes_for_cmd(cmd, 1);
 			file_opener(cmd);
 			
-			puts("hshsh");
+			//puts("hshsh");
 			//print_cmd(cmd);
 			check_line(&cmd, env_struct, env);
 			free_cmd_list(cmd);
