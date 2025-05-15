@@ -71,7 +71,8 @@ int helper3(t_exp_helper *expand, int exit_status)
 {
 	if (expand->original[expand->i] == '?')
 	{
-		char *number = ft_itoa(get_or_set(GET, 0));
+		
+		char *number = ft_itoa(exit_status);
 		expand->var_value = number;
 		expand->i++;
 		return (1);
@@ -81,7 +82,7 @@ int helper3(t_exp_helper *expand, int exit_status)
 
 int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env)
 {
-	printf("expand_handle_helper1 =====================%d\n",exit_status);
+	printf("expand_handle_helper1 =====================%d\n",  exit_status);
 	if (expand->original[expand->i] == '$' && expand->quote_state != 1)
 	{
 		printf("expand_handle_helper1  2222 =====================%d\n",  exit_status);
@@ -190,7 +191,6 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
 		should_split = 0;
 		if (current->cmd)
 		{
-			printf("process_string 00========+> %d\n", exit_status);
 			process_string(current->cmd, expand, env, exit_status);
 			free(current->cmd);
 			current->cmd = expand->expanded;
@@ -210,7 +210,6 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
 				else if (strcmp(current->args[i], "export"))
 					should_split = 1;
 			}
-			printf("process_string 01========+> %d\n", exit_status);
 			process_string(current->args[i], expand, env, exit_status);
 			free(current->args[i]);
 			current->args[i] = expand->expanded;
@@ -223,7 +222,6 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
 		{
 			if (redir->file)
 			{
-				printf("process_string 02========+> %d\n", exit_status);
 				process_string(redir->file, expand, env, exit_status);
 				free(redir->file);
 				redir->file = expand->expanded;

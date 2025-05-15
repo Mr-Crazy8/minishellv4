@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/15 15:50:48 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/15 16:13:55 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int main(int argc, char *argv[], char *env[])
 	char *input;
 	t_cmd *cmd;
 	char *preprocessed_input;
-	
+    // get_or_set(SET, 0); 
 	(void)argc;
 	(void)argv;
 	env_struct = env_maker(env, &env_struct);
@@ -158,7 +158,8 @@ int main(int argc, char *argv[], char *env[])
 			//puts("hshsh");
 			print_cmd(cmd);
 			check_line(&cmd, env_struct, env);
-			printf("get_or_set 1111111111111111 %d\n", cmd->data.exit_status);
+			exit_status = get_or_set(GET, 0);
+			printf("get_or_set 1111111111111111 ");
 			free_cmd_list(cmd);
 			//debug_print_cmd(cmd);
 			if (cmd == NULL) {
