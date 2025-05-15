@@ -90,8 +90,8 @@ typedef struct s_exp_helper {
 void process_redir_helper(char str, int *quote_state);
 void print_cmd(t_cmd *cmd_list);
 t_cmd *parse_tokens(t_token *token_list);
-int open_file(int type, char *file);
-
+int open_file(int type, char *file, t_cmd *cmd);
+void print_ambiguous_redir_errors(t_cmd *cmd);
 //env_helper.c
 void	*ft_memcpy(void *dest, const void *src, size_t n);
 // static size_t	count_words(char const *s, char c);
@@ -103,7 +103,7 @@ t_env *env_node_maker(char *env[]);
 // void env_maker(char *env[], t_env **env_struct);
 void	add_redir_back(t_redir **lst, t_redir *new);
 void file_opener(t_cmd *cmd);
-void print_file_error(char *file, int i);
+void print_file_error(char *file, int i, int Ambiguous);
 //lexer_heplper_1.c
 int is_whitespace(char c);
 // char	*ft_substr(char const *s, unsigned int start, size_t len);
@@ -167,6 +167,7 @@ char *extranct_valu(char *str);
 int	ft_isalnum(int c);
 int is_valid_var_char(char c);
 void	expand_handle(t_cmd *cmd_list, t_env *env, int exit_status);
+// void expand_handle(t_cmd *cmd_list, t_env *env);
 // void	expand_handle(t_token *token_list, t_env *env, int exit_status);
 char *lookup_variable(char *var_name, t_env *env_struct);
 int has_unquoted_spaces(char *str);
@@ -339,6 +340,7 @@ int expand_resize_buffer(t_exp_helper *expand);
 // void split_args_for_cmd(t_cmd *cmd_list);
 // void apply_word_splitting(t_cmd *cmd_list);
 // void print_file_error(char *file, int i);
+
 
 #endif
     

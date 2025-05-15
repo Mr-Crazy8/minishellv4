@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/14 15:38:51 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/15 12:46:47 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,16 +149,17 @@ int main(int argc, char *argv[], char *env[])
 			// expand_handle(token_list, env_struct, exit_status);
 			//process_quotes_for_tokens(token_list, 1);
 			cmd = parser(token_list);
-			printf("=====================%d\n",  cmd->data.exit_status);
 			expand_handle(cmd, env_struct, cmd->data.exit_status);
 			// ft_excute(cmd);
 			ambiguous_finder(cmd);
 			process_quotes_for_cmd(cmd, 1);
 			file_opener(cmd);
-			
+			print_ambiguous_redir_errors(cmd);
 			//puts("hshsh");
-			//print_cmd(cmd);
+			print_cmd(cmd);
 			check_line(&cmd, env_struct, env);
+			printf("=====================%d\n",  cmd->data.exit_status);
+			expand_handle(cmd, env_struct, cmd->data.exit_status);
 			free_cmd_list(cmd);
 			//debug_print_cmd(cmd);
 			if (cmd == NULL) {

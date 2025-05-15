@@ -18,7 +18,7 @@
    O_EVTONLY       descriptor requested for event notifications only
    O_CLOEXEC       mark as close-on-exec */
 
-int open_file(int type, char *file)
+int open_file(int type, char *file, t_cmd *cmd)
 {
     int fd;
 
@@ -27,35 +27,35 @@ int open_file(int type, char *file)
     {
         fd = open(file, O_RDONLY);
         if (fd == -1)
-            print_file_error(file, 0);
+            print_file_error(file, 0, cmd->redirs->Ambiguous);
     }
     if (type == 1)
     {
         fd = open(file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
         if (fd == -1)
-            print_file_error(file, 1);
+            print_file_error(file, 1, cmd->redirs->Ambiguous);
         
     }
     if (type == 2)
     {
         fd = open(file, O_CREAT | O_APPEND | O_WRONLY, 0644);
         if (fd == -1)
-            print_file_error(file, 2);
+            print_file_error(file, 2, cmd->redirs->Ambiguous);
     }
     return fd;
 }
 
 
 
-void print_file_error(char *file, int i)
+void print_file_error(char *file, int i, int Ambiguous)
 {
     write(2, "minishell $> ", 13);
     write(2, file, ft_strlen(file));
-    if (i == 0)
+    if (i == 0 && Ambiguous != 1)
         write(2, " : No such file or directory\n", 29);
-    else if (i == 1)
+    else if (i == 1 && Ambiguous != 1)
         write(2, ": Cannot create or write to file\n", 33);
-    else if (i == 2)
+    else if (i == 2 && Ambiguous != 1)
         write(2, ": Cannot append to file\n", 24);
 }
 
@@ -78,7 +78,7 @@ void file_opener(t_cmd *cmd)
         tp = tmp->redirs;
         while (tp)
         {   
-            fd = open_file(tp->type, tp->file);
+            fd = open_file(tp->type, tp->file, cmd);
             if (fd == -1)
             {
                 tp->fd = fd;
