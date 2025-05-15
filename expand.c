@@ -71,9 +71,7 @@ int helper3(t_exp_helper *expand, int exit_status)
 {
 	if (expand->original[expand->i] == '?')
 	{
-		
-		char *number = ft_itoa(exit_status);
-		expand->var_value = number;
+		expand->var_value = ft_itoa(exit_status);
 		expand->i++;
 		return (1);
 	}
@@ -82,10 +80,8 @@ int helper3(t_exp_helper *expand, int exit_status)
 
 int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env)
 {
-	printf("expand_handle_helper1 =====================%d\n",  exit_status);
 	if (expand->original[expand->i] == '$' && expand->quote_state != 1)
 	{
-		printf("expand_handle_helper1  2222 =====================%d\n",  exit_status);
 		expand->i++;
 		if (helper3(expand, exit_status) == 0)
 		{
@@ -175,7 +171,6 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
 	int i;
 	int should_split = 0;
 
-		printf("expand_handle =====================%d\n",  exit_status);
 	expand = malloc(sizeof(t_exp_helper));
 	if (!expand)
 	{

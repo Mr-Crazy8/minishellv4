@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/15 16:13:55 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/15 16:22:15 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ int main(int argc, char *argv[], char *env[])
 			// printf("--- TOKENS ---\n");
 			// expand_handle(token_list, env_struct, exit_status);
 			//process_quotes_for_tokens(token_list, 1);
-			
+			cmd = parser(token_list);
 			expand_handle(cmd, env_struct,  cmd->data.exit_status);
 			// ft_excute(cmd);
 			ambiguous_finder(cmd);
@@ -156,10 +156,9 @@ int main(int argc, char *argv[], char *env[])
 			file_opener(cmd);
 			print_ambiguous_redir_errors(cmd);
 			//puts("hshsh");
-			print_cmd(cmd);
+			//print_cmd(cmd);
 			check_line(&cmd, env_struct, env);
 			exit_status = get_or_set(GET, 0);
-			printf("get_or_set 1111111111111111 ");
 			free_cmd_list(cmd);
 			//debug_print_cmd(cmd);
 			if (cmd == NULL) {
