@@ -14,7 +14,8 @@ char **split_if_needed(char *str)
     i = 0;
     if (!str || !*str || (!strchr(str, ' ') && !strchr(str, '\t') && !strchr(str, '\n')))
         return NULL;
-    result = ft_split(str, ' ');
+    // result = ft_split(str, ' ');
+    result = ft_split_q(str, ' ');
     count = 0;
     if (result) 
     {
@@ -185,12 +186,12 @@ void cmd_splitting_helper(t_cmd *current, char **new_args, char **split, int wor
             }
             new_args[arg_count+word_count-1] = NULL;
             j = 0;
-            while (j < arg_count) 
-                {
-                    free(current->args[j]);
-                    j++;
-                }
-                free(current->args);
+            // while (j < arg_count) 
+            //     {
+            //         free(current->args[j]);
+            //         j++;
+            //     }
+            //     free(current->args);
                 current->args = new_args;
 }
 
@@ -239,6 +240,9 @@ void split_the_rest_helper(char *equals, int should_split, t_cmd *current, int *
     int word_count;
     char **new_args;
 
+       if (!current->args[(*i)] || !should_split)
+        return;
+
     if (!equals || should_split)
     {
             split = split_if_needed(current->args[(*i)]);
@@ -270,6 +274,7 @@ void split_the_rest(t_cmd *current, int should_split)
     i = 1;
     while (current->args[i])
     {
+
         equals = strchr(current->args[i], '=');
         split_the_rest_helper(equals, should_split, current, &i);
         i++;

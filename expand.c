@@ -71,7 +71,7 @@ int helper3(t_exp_helper *expand, int exit_status)
 {
 	if (expand->original[expand->i] == '?')
 	{
-		expand->var_value = ft_itoa(exit_status);
+		expand->var_value = ft_itoa(get_or_set(GET, 0));
 		expand->i++;
 		return (1);
 	}

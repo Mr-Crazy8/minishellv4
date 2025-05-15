@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/11 10:47:22 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/15 20:23:52 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char *selective_remove_quotes(char *str, int remove_mode)
     int j;
     int quote_state;
     int in_opposite_quote;
-    
+ 
    new_str = allocate_and_init(str, &i, &j, &quote_state);
     if (!new_str)
         return (NULL);

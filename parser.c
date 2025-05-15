@@ -208,7 +208,9 @@ t_cmd *creat_cmd_node(char *str,  t_token *tp,  int pipe_out)
     tmp = malloc(sizeof(t_cmd));
     if (!tmp)
         return (NULL);
-        tmp->args = ft_split_q(cmd_extracter(str), ' ');
+    tmp->args = ft_split_q(cmd_extracter(str), ' ');
+   
+
     if (tmp->args && tmp->args[0])
         tmp->cmd = ft_strdup(tmp->args[0]);
     else
