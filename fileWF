@@ -32,6 +32,7 @@ file
 file1
 file2
 file3
+fileWF
 free_func.c
 free_func.o
 free_func_1.c

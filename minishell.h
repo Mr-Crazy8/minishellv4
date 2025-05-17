@@ -64,7 +64,7 @@ typedef struct s_cmd
     t_redir *redirs;      /* Redirections list */
     t_data    data;
     int pipe_out;         /* 1 if command pipes to next */
-    int     fd_pipe[1];
+    int     fd_pipe[2];
     char **args_befor_quotes_remover;
     struct s_cmd *next;   /* Next command in pipeline */
 } t_cmd;

@@ -10,8 +10,6 @@ char *lookup_variable(char *var_name, t_env *env_struct)
 		{
 			if (tmp->value)
 				return (ft_strdup(tmp->value));
-			else
-				return (NULL);
 		}
 		tmp = tmp->next;
 	}

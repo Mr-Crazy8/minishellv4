@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "minishell.h": "c",
-        "iterator": "c"
+        "iterator": "c",
+        "ctype.h": "c",
+        "sstream": "c"
     }
 }

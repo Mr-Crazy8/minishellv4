@@ -40,18 +40,32 @@ void print_cmd(t_cmd *cmd_list)    /// this should be deleted in the final work
     while (tmp)
     {
         i = 0;
+        j = 0;  // Reset j for each command
+        
+        // Check if cmd is NULL before printing
         if (tmp->cmd)
             printf("command name : %s\n", tmp->cmd);
-        while (tmp->args[i])
-        {
-            printf("command args : %s\n", tmp->args[i]);
-            i++;
+        else
+            printf("command name : (null)\n");
+            
+        // Check if args is NULL before accessing
+        if (tmp->args) {
+            while (tmp->args[i])
+            {
+                printf("command args : %s\n", tmp->args[i]);
+                i++;
+            }
         }
-        while (tmp->args_befor_quotes_remover[j])
-        {
-            printf("args befor quotes remover : %s\n", tmp->args_befor_quotes_remover[j]);
-            j++;
+        
+        // Check if args_befor_quotes_remover is NULL before accessing
+        if (tmp->args_befor_quotes_remover) {
+            while (tmp->args_befor_quotes_remover[j])
+            {
+                printf("args befor quotes remover : %s\n", tmp->args_befor_quotes_remover[j]);
+                j++;
+            }
         }
+        
         if (tmp->redirs)
         {
             t_redir *tp = tmp->redirs;
@@ -59,9 +73,20 @@ void print_cmd(t_cmd *cmd_list)    /// this should be deleted in the final work
             printf("0:<, 1:>, 2:>>, 3:<< \n");
             while (tp)
             {
-                printf("type of redir : %d\n", tp->type);  // Added newline
-                printf("file name befor the expanend : %s\n", tp->orig_token);
-                printf("file name : %s\n", tp->file);      // Added newline
+                printf("type of redir : %d\n", tp->type);
+                
+                // Check if orig_token is NULL before printing
+                if (tp->orig_token)
+                    printf("file name befor the expanend : %s\n", tp->orig_token);
+                else
+                    printf("file name befor the expanend : (null)\n");
+                    
+                // Check if file is NULL before printing
+                if (tp->file)
+                    printf("file name : %s\n", tp->file);
+                else
+                    printf("file name : (null)\n");
+                    
                 printf("fd for the file : %d\n", tp->fd);
                 printf("ambiguous %d\n", tp->Ambiguous);
                 tp = tp->next;
@@ -72,7 +97,6 @@ void print_cmd(t_cmd *cmd_list)    /// this should be deleted in the final work
         tmp = tmp->next;
     }   
 }
-
 
 
 void print_ambiguous_redir_errors(t_cmd *cmd)

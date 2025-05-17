@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redrction.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayoakouh <ayoakouh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:59:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/09 15:25:48 by ayoakouh         ###   ########.fr       */
+/*   Updated: 2025/05/17 12:49:03 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,13 @@ void ft_redircte(t_redir *rederction)
             if(fd == -1)
             {
                 perror("open");
-                exit(1);
             }
+            else
+                {
                 dup2(fd, 1);
                 close(fd);
+                    
+                }
                 // execve(tmp->args, tmp->args, NULL);
         }
         else if(tmp->type == 2)

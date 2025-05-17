@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/17 10:35:14 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/17 17:11:58 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,7 @@ void excute_builting(t_cmd **command, t_env *env_list, char *env[])
 }
 void execute_single_command(t_cmd *cmd, t_env *list_env, char *env[])
 {
-	int i = 0;
 
-	printf("cmd->args[0] ===> %s\n",  cmd->args[0]);
 	if(!is_builtin(cmd->args))
 	{
 		excute_builting(&cmd, list_env, env);
@@ -143,7 +141,7 @@ void check_line(t_cmd **command, t_env *env_list, char *env[])
 	else
 	{
 		if(cmd->redirs)
-			ft_redircte(cmd->redirs);
+			ft_redircte(cmd->redirs); 
 		execute_single_command(cmd, env_list, env);
 
 	}
