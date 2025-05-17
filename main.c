@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/15 20:34:52 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/16 20:32:19 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void excute_builting(t_cmd **command, t_env *env_list, char *env[])
 		status = ft_env(*command, env_list);
 	else if (strncmp("exit", cmd->args[0], 4) == 0 && strlen(cmd->args[0]) == 4)
 	{
-		ft_exit(cmd->args, cmd->data);
+		ft_exit(cmd->args, cmd->data, env_list);
 		free_cmd_list(cmd);
 	}
 	else if (strncmp("unset", cmd->args[0], 5) == 0 && strlen(cmd->args[0]) == 5)
@@ -85,6 +85,43 @@ void execute_single_command(t_cmd *cmd, t_env *list_env, char *env[])
 		// printf(".....%d\n", cmd->data.exit_status);
 	}
 }
+
+
+void add_one_shlvl(t_env *env)
+{
+    t_env *tmp = env;
+    int shl_vl = 0;
+
+	if (!env) 
+		return;
+    while (tmp) 
+    {
+        if (tmp->key) 
+        {
+			if (tmp->key && strcmp(tmp->key, "SHLVL") == 0)
+			{
+            	if (tmp->value && tmp->value[0] != '\0')
+            	{
+                	shl_vl = atoi(tmp->value);
+                	free(tmp->value);
+					tmp->value = NULL;
+            	}
+            shl_vl++; 
+            tmp->value = ft_itoa(shl_vl);
+            if (!tmp->value) 
+			{
+                    tmp->value = strdup("1");
+            }
+            break;
+				
+			}
+        }
+        tmp = tmp->next;
+    }
+}
+
+
+
 void check_line(t_cmd **command, t_env *env_list, char *env[])
 {
 	 t_cmd *cmd;
@@ -94,6 +131,7 @@ void check_line(t_cmd **command, t_env *env_list, char *env[])
 		
     fd_input = dup(0);
 	fd_output = dup(1);
+	//shlvl(env_list, *command);
 	if (cmd->pipe_out)
 	{
 		ft_excute_mult_pipe(cmd, env_list, env);
@@ -126,6 +164,7 @@ int main(int argc, char *argv[], char *env[])
 	env_struct = env_maker(env, &env_struct);
 	if(!env_struct)
 		env_null(&env_struct);
+	add_one_shlvl(env_struct);
 	token_list = NULL;
 	while (1)
 	{
@@ -151,6 +190,7 @@ int main(int argc, char *argv[], char *env[])
 			// expand_handle(token_list, env_struct, exit_status);
 			//process_quotes_for_tokens(token_list, 1);
 			cmd = parser(token_list);
+			
 			exit_status = get_or_set(GET, 0);
 			//printf("exit_status first ====================> %d\n", exit_status);
 			expand_handle(cmd, env_struct,exit_status);
@@ -165,7 +205,7 @@ int main(int argc, char *argv[], char *env[])
 			exit_status = cmd->data.exit_status;
 			//printf("exit_status number two  ====================> %d\n", cmd->data.exit_status);
 			//exit_status = get_or_set(GET, 0);
-			//free_cmd_list(cmd);
+			free_cmd_list(cmd);
 			//debug_print_cmd(cmd);
 			if (cmd == NULL) {
 				printf("Warning: Command list is empty after parsing!\n");

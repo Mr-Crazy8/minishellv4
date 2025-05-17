@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 18:26:45 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/15 16:14:11 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/16 14:15:23 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int is_numeric(char *str)
     return (1);
 }
 
-int ft_exit(char **args, t_data data)
+int ft_exit(char **args, t_data data, t_env *env)
 {
     int     status;
     long    n;

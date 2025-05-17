@@ -3,13 +3,19 @@
 char *lookup_variable(char *var_name, t_env *env_struct)
 {
 	t_env *tmp = env_struct;
+	
 	while (tmp)
 	{
 		if (strcmp(var_name, tmp->key) == 0)
-			return (tmp->value ? ft_strdup(tmp->value) : ft_strdup(""));
+		{
+			if (tmp->value)
+				return (ft_strdup(tmp->value));
+			else
+				return (NULL);
+		}
 		tmp = tmp->next;
 	}
-	return (ft_strdup(""));
+	return (NULL);
 }
 
 int expand_fill_str(t_exp_helper *expand, char *str)

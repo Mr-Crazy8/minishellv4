@@ -198,7 +198,9 @@ void    del(void *content);
 int ft_unset(t_env **env_list, char **variables);
 int     remove_env(t_env **env_list, char *variable);
 int     is_valid_key(char *key);
-int ft_exit(char **args, t_data data);
+// int ft_exit(char **args, t_data data);
+int ft_exit(char **args, t_data data, t_env *env);
+void shl_vl_editer_remov(t_env *env);
 void	ft_putstr_fd(char *s, int fd);
 int    ft_env(t_cmd *cmd, t_env *env_list);
 

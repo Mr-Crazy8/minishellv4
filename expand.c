@@ -125,13 +125,15 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env)
 			}
 			memcpy(expand->expanded + expand->j, expand->var_value, len);
 			expand->j += len;
+			free(expand->var_value);
+            expand->var_value = NULL;
 		}
 
-		if (expand->var_value)
-		{
-			free(expand->var_value);
-			expand->var_value = NULL;
-		}
+		// if (expand->var_value)
+		// {
+		// 	free(expand->var_value);
+		// 	expand->var_value = NULL;
+		// }
 		return (1);
 	}
 	return (0);

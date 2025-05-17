@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayoakouh <ayoakouh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 14:33:17 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/06 12:51:58 by ayoakouh         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:02:24 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int remove_env(t_env **env_list, char *variable)
 
     if (!*env_list || !env_list)
         return (0);
+        
     if (ft_strcmp((*env_list)->key, variable) == 0)
     {
         to_delete = *env_list;
@@ -75,7 +76,7 @@ int ft_unset(t_env **env_list, char **variables)
             printf("unset: `%s': not a valid identifier\n", variables[i]);
             status = 1;
             i++;
-            // continue;
+            continue;
         }
 
         remove_env(env_list, variables[i]);
