@@ -103,6 +103,7 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env)
 			memcpy(expand->var_name, expand->original + expand->start, var_len);
 			expand->var_name[var_len] = '\0';
 			expand->var_value = lookup_variable(expand->var_name, env);
+			printf("expand->var_value %s\n", expand->var_value);
 			free(expand->var_name);
 			expand->var_name = NULL;
 		}
@@ -128,6 +129,7 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env)
 			free(expand->var_value);
             expand->var_value = NULL;
 		}
+			printf("expand->var_value %s\n", expand->var_value);
 
 		// if (expand->var_value)
 		// {
@@ -147,6 +149,7 @@ void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status
 		return;
 	}
 
+
 	while (expand->original[expand->i])
 	{
 		if (!expand_handle_helper0(expand) && !expand_handle_helper1(expand, exit_status, env))
@@ -163,6 +166,7 @@ void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status
 
 	if (expand->expanded)
 		expand->expanded[expand->j] = '\0';
+	printf("expand->expanded 1 %s\n", expand->expanded);
 }
 
 void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
