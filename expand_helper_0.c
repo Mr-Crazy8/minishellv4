@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/16 21:14:29 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/17 10:11:57 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode)
     if (current->args)
         {
             (*i) = 0;
-            while (current->args[(*i)] &&  current->args_befor_quotes_remover[(*i)][0] != '$')
+            while (current->args[(*i)])
             {
                 processed = selective_remove_quotes(current->args[(*i)], remove_mode);
                 if (processed)
@@ -101,7 +101,7 @@ void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode)
                 (*i)++;
             }
         }
-        if (current->cmd && current->args_befor_quotes_remover[0][0] != '$')
+        if (current->cmd)
         {
             (*i) = 0;
             processed = selective_remove_quotes(current->cmd, remove_mode);
@@ -127,7 +127,7 @@ void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode)
         t_redir *redir = current->redirs;
         while (redir)
         {
-            if (redir->file && strchr(redir->orig_token, '$') == NULL)
+            if (redir->file)
             {
                 processed = selective_remove_quotes(redir->file, remove_mode);
                 if (processed)
