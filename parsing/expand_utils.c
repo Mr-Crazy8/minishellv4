@@ -224,7 +224,6 @@ void split_the_rest(t_cmd *current, int should_split)
     i = 1;
     while (current->args && current->args[i])
     {
-
         equals = strchr(current->args[i], '=');
         split_the_rest_helper(equals, should_split, current, &i);
         i++;
