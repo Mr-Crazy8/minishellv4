@@ -5,18 +5,18 @@ CFLAGS = -Wall -g  -fsanitize=address
 NAME = minishell
 
 # Source files
-SRCS = r.c ft_split.c libft_utils.c echo.c \
+SRCS = r.c parsing/ft_split.c libft_utils.c echo.c \
 		ft_unset.c ft_exit.c env.c export.c ft_cd.c pwd.c \
-		env_null.c redrction.c add_back_func.c         lexer_helper_0.c \
-		debugging_tools.c       lexer_helper_1.c \
-		 parser.c     parser_helper.c 	lll.c	expand_utils.c\
-		expand.c                parser_helper_1.c \
-		expand_helper_0.c       parser_helper_2.c parsing_main.c\
-		expand_helper_1.c       parser_helper_4.c \
-		free_func.c          	main.c open_files.c \
-		free_func_1.c           syntx_check.c Ambiguous.c\
-		ft_itoa.c               syntx_check_helper_0.c \
-		lexer.c                 syntx_check_helper_1.c
+		env_null.c redrction.c parsing/add_back_func.c         parsing/lexer_helper_0.c \
+		parsing/debugging_tools.c       parsing/lexer_helper_1.c \
+		 parsing/parser.c     parsing/parser_helper.c 	lll.c	parsing/expand_utils.c\
+		parsing/expand.c                parsing/parser_helper_1.c \
+		parsing/expand_helper_0.c       parsing/parser_helper_2.c parsing/parsing_main.c\
+		parsing/expand_helper_1.c       parsing/parser_helper_4.c \
+		parsing/free_func.c          	main.c parsing/open_files.c \
+		parsing/free_func_1.c           parsing/syntx_check.c parsing/Ambiguous.c\
+		parsing/ft_itoa.c               parsing/syntx_check_helper_0.c \
+		parsing/lexer.c                 parsing/syntx_check_helper_1.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)

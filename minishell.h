@@ -1,6 +1,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+
+#include "parsing/parsing.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,76 +17,75 @@
 #include<fcntl.h>
 #include<limits.h>
 
-#define SET 0
-#define GET 1
-
-typedef struct t_data
-{
-    int     exit_status;
-} t_data;
-
-typedef struct s_token
-{
-   char *DATA;
-   char *TOKIN;
-   char *befor_DATA_expand;
-   struct s_token *next;
-} t_token;
-
-typedef struct s_env
-{
-    char    *key;
-    char    *value;
-    int     is_not_active;
-    struct s_env *next;
-} t_env;
-
-typedef struct s_var {
-    char *name;         // Variable name
-    int is_valid;       // Is this a valid variable ref
-    int length;         // Length of entire reference
-    int name_allocated; // Did we allocate memory for name
-} t_var;
-
-typedef struct s_redir
-{
-    int type;             /* 0:<, 1:>, 2:>>, 3:<< */
-    char *file;           /* Filename or heredoc delimiter */
-    int fd;
-    int Ambiguous;
-    char    *orig_token;  /* Original token with quotes */
-    char *heredoc_delemter; /* Fully processed delimiter for matching */
-    struct s_redir *next; /* Next redirection */
-} t_redir;
-
-typedef struct s_cmd
-{
-    char *cmd;            /* Command name */
-    char **args;          /* Command args (including cmd as args[0]) */
-    t_redir *redirs;      /* Redirections list */
-    t_data    data;
-    int pipe_out;         /* 1 if command pipes to next */
-    int     fd_pipe[2];
-    char **args_befor_quotes_remover;
-    struct s_cmd *next;   /* Next command in pipeline */
-} t_cmd;
 
 
-typedef struct s_exp_helper {
+// typedef struct t_data
+// {
+//     int     exit_status;
+// } t_data;
+
+// typedef struct s_token
+// {
+//    char *DATA;
+//    char *TOKIN;
+//    char *befor_DATA_expand;
+//    struct s_token *next;
+// } t_token;
+
+// typedef struct s_env
+// {
+//     char    *key;
+//     char    *value;
+//     int     is_not_active;
+//     struct s_env *next;
+// } t_env;
+
+// typedef struct s_var {
+//     char *name;         // Variable name
+//     int is_valid;       // Is this a valid variable ref
+//     int length;         // Length of entire reference
+//     int name_allocated; // Did we allocate memory for name
+// } t_var;
+
+// typedef struct s_redir
+// {
+//     int type;             /* 0:<, 1:>, 2:>>, 3:<< */
+//     char *file;           /* Filename or heredoc delimiter */
+//     int fd;
+//     int Ambiguous;
+//     char    *orig_token;  /* Original token with quotes */
+//     char *heredoc_delemter; /* Fully processed delimiter for matching */
+//     struct s_redir *next; /* Next redirection */
+// } t_redir;
+
+// typedef struct s_cmd
+// {
+//     char *cmd;            /* Command name */
+//     char **args;          /* Command args (including cmd as args[0]) */
+//     t_redir *redirs;      /* Redirections list */
+//     t_data    data;
+//     int pipe_out;         /* 1 if command pipes to next */
+//     int     fd_pipe[2];
+//     char **args_befor_quotes_remover;
+//     struct s_cmd *next;   /* Next command in pipeline */
+// } t_cmd;
+
+
+// typedef struct s_exp_helper {
     
-    char *original;
-    char *expanded;
-    int i;
-    int j;
-    int quote_state;
-    char *var_name;
-    char *var_value;
-    int k;
-    int start;
-    size_t buffer_size;
-    int var_expanded;
+//     char *original;
+//     char *expanded;
+//     int i;
+//     int j;
+//     int quote_state;
+//     char *var_name;
+//     char *var_value;
+//     int k;
+//     int start;
+//     size_t buffer_size;
+//     int var_expanded;
     
-} t_exp_helper;
+// } t_exp_helper;
 int array_length(char **arr);
 
 void process_redir_helper(char str, int *quote_state);
@@ -159,8 +160,8 @@ int check_invalid_filename(char *str);
 void	redirection_helper(char *str, int *i, int *count);
 
 
-
-
+int	is_valid_key(char *key);
+int get_or_set(int type, int status);
 
 void ambiguous_finder(t_cmd *cmd);
 void ambiguous_checker(t_redir *redir);

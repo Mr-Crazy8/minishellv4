@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/18 12:36:39 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/18 17:39:11 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@ int is_builtin(char **args)
 		else
 			return (1);
 }
-int get_or_set(int type, int status)
-{
-	static int exit_status = 0; // hold the value even after function ends
+// int get_or_set(int type, int status)
+// {
+// 	static int exit_status = 0; // hold the value even after function ends
 
-	if (type == SET) //SET
-		exit_status = status; // rje3 dkre hadik kifch dkhlha m3a exit_status;
-	return (exit_status); // always return the current value
-}
+// 	if (type == SET) //SET
+// 		exit_status = status; // rje3 dkre hadik kifch dkhlha m3a exit_status;
+// 	return (exit_status); // always return the current value
+// }
 void excute_builting(t_cmd **command, t_env *env_list, char *env[])
 {
 	t_cmd	*cmd;

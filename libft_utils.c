@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayoakouh <ayoakouh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 19:10:36 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/12 17:43:36 by ayoakouh         ###   ########.fr       */
+/*   Updated: 2025/05/18 17:50:48 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,28 +102,28 @@ void	ft_lstadd_back(t_env **lst, t_env *new)
 	current ->next = new;
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char	*ptr;
-	size_t	i;
-	size_t	l;
+// char	*ft_substr(char const *s, unsigned int start, size_t len)
+// {
+// 	char	*ptr;
+// 	size_t	i;
+// 	size_t	l;
 
-	i = 0;
-	if (s == NULL)
-		return (NULL);
-	l = strlen(s);
-	if (start >= l)
-		return (strdup(""));
-	if (len > l - start)
-		len = l - start;
-	ptr = (char *)malloc(sizeof(char) * len + 1);
-	if (ptr == NULL)
-		return (NULL);
-	while (i < len)
-	{
-		ptr[i] = s[start + i];
-		i++;
-	}
-	ptr[len] = '\0';
-	return (ptr);
-}
+// 	i = 0;
+// 	if (s == NULL)
+// 		return (NULL);
+// 	l = strlen(s);
+// 	if (start >= l)
+// 		return (strdup(""));
+// 	if (len > l - start)
+// 		len = l - start;
+// 	ptr = (char *)malloc(sizeof(char) * len + 1);
+// 	if (ptr == NULL)
+// 		return (NULL);
+// 	while (i < len)
+// 	{
+// 		ptr[i] = s[start + i];
+// 		i++;
+// 	}
+// 	ptr[len] = '\0';
+// 	return (ptr);
+// }

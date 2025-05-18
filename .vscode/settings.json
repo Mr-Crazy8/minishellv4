@@ -3,6 +3,7 @@
         "minishell.h": "c",
         "iterator": "c",
         "ctype.h": "c",
-        "sstream": "c"
+        "sstream": "c",
+        "stdlib.h": "c"
     }
 }

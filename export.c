@@ -1,26 +1,26 @@
 #include "minishell.h"
 
-int	is_valid_key(char *key)
-{
-	int i;
+// int	is_valid_key(char *key)
+// {
+// 	int i;
 
-	if (!key || (!((key[0] >= 'a' && key[0] <= 'z') || 
-	               (key[0] >= 'A' && key[0] <= 'Z') || 
-	               key[0] == '_')))
-		return (1); // invalid key
+// 	if (!key || (!((key[0] >= 'a' && key[0] <= 'z') || 
+// 	               (key[0] >= 'A' && key[0] <= 'Z') || 
+// 	               key[0] == '_')))
+// 		return (1); // invalid key
 
-	i = 1;
-	while (key[i] && key[i] != '=')
-	{
-		if (!((key[i] >= 'a' && key[i] <= 'z') ||
-		      (key[i] >= 'A' && key[i] <= 'Z') ||
-		      (key[i] >= '0' && key[i] <= '9') ||
-		      key[i] == '_'))
-			return (1);
-		i++;
-	}
-	return (0);
-}
+// 	i = 1;
+// 	while (key[i] && key[i] != '=')
+// 	{
+// 		if (!((key[i] >= 'a' && key[i] <= 'z') ||
+// 		      (key[i] >= 'A' && key[i] <= 'Z') ||
+// 		      (key[i] >= '0' && key[i] <= '9') ||
+// 		      key[i] == '_'))
+// 			return (1);
+// 		i++;
+// 	}
+// 	return (0);
+// }
 
 t_env *sort_env(t_env **head)
 {
