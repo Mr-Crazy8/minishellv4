@@ -6,13 +6,12 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/17 17:03:23 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/18 12:44:08 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-#include "minishell.h"
 
 int process_quote_char(char c, int *quote_state, char *new_str, int *j, int remove_mode)
 {
@@ -92,181 +91,61 @@ int check_for_case(char *str)
     return 0;
 }
 
-// void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode)
-// {
-//     char *processed;
-//     char **split;
-//     char **split2;
-//     if (current->args)
-//         {
-//             (*i) = 0;
-//             while (current->args[(*i)] )
-//             {
-//                     if (strchr(current->args_befor_quotes_remover[(*i)], '=') != NULL && strchr(current->args_befor_quotes_remover[(*i)], '$') != NULL)
-//                     {
-//                         split = ft_split(current->args_befor_quotes_remover[(*i)], '=');
-//                         processed = selective_remove_quotes(split[0], remove_mode);
-//                         processed = ft_strjoin(processed, "=");
-//                         if (strchr(split[1], '$') != NULL)
-//                             {
-//                                 split2 = ft_split(current->args[(*i)], '=');
-//                                 processed = ft_strjoin(processed, split2[1]);
-//                             }
-//                         else
-//                             processed = ft_strjoin(processed, split[1]);
-                        
-//                     }
-//                     else if (strchr(current->args_befor_quotes_remover[(*i)], '$') != NULL)
-//                         processed = selective_remove_quotes(current->args[(*i)], 0);
-//                     else
-//                         processed = selective_remove_quotes(current->args[(*i)], remove_mode);
-//                 if (processed)
-//                 {
-//                     free(current->args[(*i)]);
-//                     current->args[(*i)] = processed;
-//                 }
-//                 (*i)++;
-//             }
-//         }
-//         if (current->cmd)
-//         {
-//             (*i) = 0;
-//             if (current->args_befor_quotes_remover[0][0] == '$')
-//                 remove_mode = 0;
-//             processed = selective_remove_quotes(current->cmd, remove_mode);
-//             if (processed)
-//                 {
-//                     free(current->cmd);
-//                     current->cmd = processed;
-//                 }
-//         }
-// }
-
-void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode)
+void process_quotes_for_cmd_hp(t_cmd *current, t_env *env, int *i, int remove_mode)
 {
-    char *processed = NULL;
+    char *processed;
     char **split;
     char **split2;
-    
     if (current->args)
-    {
-        (*i) = 0;
-        while (current->args[(*i)])
         {
-            processed = NULL; // Reset processed for each iteration
-            
-            // Only access args_befor_quotes_remover if it exists
-            if (current->args_befor_quotes_remover)
+            (*i) = 0;
+            while (current->args[(*i)] )
             {
-                // Make sure we don't access beyond the end of args_befor_quotes_remover array
-                int j = 0;
-                while (current->args_befor_quotes_remover[j] != NULL)
-                    j++;
-                
-                // Only access if the index is within bounds
-                if ((*i) < j && current->args_befor_quotes_remover[(*i)])
-                {
-                    if (strchr(current->args_befor_quotes_remover[(*i)], '=') != NULL && 
-                        strchr(current->args_befor_quotes_remover[(*i)], '$') != NULL)
+
+                if (current->args_befor_quotes_remover[(*i)] && strchr(current->args_befor_quotes_remover[(*i)], '=') != NULL && strchr(current->args_befor_quotes_remover[(*i)], '$') != NULL)
                     {
                         split = ft_split(current->args_befor_quotes_remover[(*i)], '=');
-                        if (split && split[0]) 
-                        {
-                            processed = selective_remove_quotes(split[0], remove_mode);
-                            char *temp = processed;
-                            processed = ft_strjoin(processed, "=");
-                            free(temp);
-                            
-                            if (split[1] && strchr(split[1], '$') != NULL)
+                        processed = selective_remove_quotes(split[0], remove_mode);
+                        processed = ft_strjoin(processed, "=");
+                        if (strchr(split[1], '$') != NULL)
                             {
                                 split2 = ft_split(current->args[(*i)], '=');
-                                if (split2 && split2[1]) 
-                                {
-                                    temp = processed;
-                                    processed = ft_strjoin(processed, split2[1]);
-                                    free(temp);
-                                    
-                                    // Free split2
-                                    j = 0;
-                                    while (split2[j])
-                                    {
-                                        free(split2[j]);
-                                        j++;
-                                    }
-                                    free(split2);
-                                }
+                                processed = ft_strjoin(processed, split2[1]);
                             }
-                            else if (split[1])
-                            {
-                                temp = processed;
-                                processed = ft_strjoin(processed, split[1]);
-                                free(temp);
-                            }
-                            
-                            // Free split
-                            j = 0;
-                            while (split[j])
-                            {
-                                free(split[j]);
-                                j++;
-                            }
-                            free(split);
-                        }
+                        else
+                            processed = ft_strjoin(processed, split[1]);
+                        
                     }
-                    else if (strchr(current->args_befor_quotes_remover[(*i)], '$') != NULL)
-                    {
+                    else if (current->args[(*i)] && current->args_befor_quotes_remover[(*i)] && strchr(current->args_befor_quotes_remover[(*i)], '$') != NULL)
                         processed = selective_remove_quotes(current->args[(*i)], 0);
-                    }
                     else
-                    {
                         processed = selective_remove_quotes(current->args[(*i)], remove_mode);
-                    }
-                }
-                else
+                if (processed)
                 {
-                    // Index out of bounds, use regular handling
-                    processed = selective_remove_quotes(current->args[(*i)], remove_mode);
+                    free(current->args[(*i)]);
+                    current->args[(*i)] = processed;
                 }
+                (*i)++;
             }
-            else
-            {
-                // args_befor_quotes_remover is NULL
-                processed = selective_remove_quotes(current->args[(*i)], remove_mode);
-            }
-            
+        }
+        if (current->cmd)
+        {
+            (*i) = 0;
+            if (current->args_befor_quotes_remover[0][0] == '$')
+                remove_mode = 0;
+            processed = selective_remove_quotes(current->cmd, remove_mode);
             if (processed)
-            {
-                free(current->args[(*i)]);
-                current->args[(*i)] = processed;
-            }
-            (*i)++;
+                {
+                    free(current->cmd);
+                    current->cmd = processed;
+                }
         }
-    }
-    
-    if (current->cmd)
-    {
-        (*i) = 0;
-        int cmd_remove_mode = remove_mode;
-        
-        // Safe check for args_befor_quotes_remover
-        if (current->args_befor_quotes_remover && 
-            current->args_befor_quotes_remover[0] && 
-            current->args_befor_quotes_remover[0][0] == '$')
-        {
-            cmd_remove_mode = 0;
-        }
-        
-        processed = selective_remove_quotes(current->cmd, cmd_remove_mode);
-        if (processed)
-        {
-            free(current->cmd);
-            current->cmd = processed;
-        }
-    }
 }
 
 
-void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode)
+
+
+void process_quotes_for_cmd(t_cmd *cmd_list, t_env *env, int remove_mode)
 {
     t_cmd *current;
     char *processed;
@@ -275,7 +154,7 @@ void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode)
     current = cmd_list;
     while (current)
     {
-        process_quotes_for_cmd_hp(current, &i, remove_mode);
+        process_quotes_for_cmd_hp(current, env, &i, remove_mode);
         t_redir *redir = current->redirs;
         while (redir)
         {

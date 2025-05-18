@@ -85,7 +85,7 @@ typedef struct s_exp_helper {
     int var_expanded;
     
 } t_exp_helper;
-
+int array_length(char **arr);
 
 void process_redir_helper(char str, int *quote_state);
 void print_cmd(t_cmd *cmd_list);
@@ -110,12 +110,14 @@ int is_whitespace(char c);
 int special_character_cheker(char character);
 t_token *special_character_handle(char *input, int *i);
 void handle_block_helper(char *input, int *i, t_token **token_list);
-void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode);
+// void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode);
+void process_quotes_for_cmd_hp(t_cmd *current, t_env *env, int *i, int remove_mode);
+void process_quotes_for_cmd(t_cmd *cmd_list, t_env *env, int remove_mode);
 t_redir *creat_redir_node(int type, char *file);
-void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode);
 t_cmd *parser(t_token *token_list);
 void free_split_str(char **split_str);
 char **free_split_q(char **split, size_t j);
+char *ft_strjoin_free(char *s1, char *s2);
 char **ft_split_q(char const *s, char c);
 char *redir_extracter(char *str);
 // static char *process_redir(char *str, int *pos);

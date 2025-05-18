@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/17 17:11:58 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/18 12:36:39 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,9 @@ void check_line(t_cmd **command, t_env *env_list, char *env[])
 }
 int main(int argc, char *argv[], char *env[])
 {
+
+	// if (isatty(STDERR_FILENO) == 0)
+	// 	return (0);
 	// atexit(ff);
 	t_token *token_list;
 	t_env *env_struct = NULL;   //// add to the final main
@@ -197,7 +200,7 @@ int main(int argc, char *argv[], char *env[])
 			expand_handle(cmd, env_struct,exit_status);
 			// ft_excute(cmd);
 			ambiguous_finder(cmd);
-			process_quotes_for_cmd(cmd, 1);
+			process_quotes_for_cmd(cmd, env_struct,  1);
 			file_opener(cmd);
 			print_ambiguous_redir_errors(cmd);
 			//puts("hshsh");
