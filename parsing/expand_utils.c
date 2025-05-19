@@ -296,11 +296,19 @@ void split_the_rest_helper(char *equals, int should_split, t_cmd *current, int *
             force_split = 1;
             
         // If variable name contains quotes, force split
-        if (current->args_befor_quotes_remover && current->args_befor_quotes_remover[(*i)])
-        {
-            char *orig_equals = strchr(current->args_befor_quotes_remover[(*i)], '=');
-            if (orig_equals && check_var_quotes(current->args_befor_quotes_remover[(*i)], orig_equals))
-                force_split = 1;
+        // SAFE ACCESS CHECK - Make sure array and index are valid before accessing
+        if (current->args_befor_quotes_remover) {
+            // Count elements to make sure we don't go beyond the end
+            int count = 0;
+            while (current->args_befor_quotes_remover[count])
+                count++;
+                
+            // Only access if index is valid
+            if (*i < count && current->args_befor_quotes_remover[*i]) {
+                char *orig_equals = strchr(current->args_befor_quotes_remover[*i], '=');
+                if (orig_equals && check_var_quotes(current->args_befor_quotes_remover[*i], orig_equals))
+                    force_split = 1;
+            }
         }
     }
 
@@ -372,12 +380,27 @@ void split_the_rest(t_cmd *current, int should_split)
     while (current->args && current->args[i]) {
         equals = strchr(current->args[i], '=');
         
-        // Determine if this specific argument should be split
-        arg_should_split = should_split_arg(
-            current->args[i], 
-            (current->args_befor_quotes_remover && current->args_befor_quotes_remover[i]) ? 
-                current->args_befor_quotes_remover[i] : NULL
-        );
+        // Determine if this specific argument should be split 
+        // BUT do it safely
+        if (current->args_befor_quotes_remover) {
+            // Count elements to ensure index is valid
+            int count = 0;
+            while (current->args_befor_quotes_remover[count])
+                count++;
+                
+            // Only access if the index is valid
+            if (i < count && current->args_befor_quotes_remover[i]) {
+                arg_should_split = should_split_arg(
+                    current->args[i], 
+                    current->args_befor_quotes_remover[i]
+                );
+            } else {
+                arg_should_split = should_split_arg(current->args[i], NULL);
+            }
+        } else {
+            // No args_befor_quotes_remover array
+            arg_should_split = should_split_arg(current->args[i], NULL);
+        }
         
         split_the_rest_helper(equals, arg_should_split, current, &i);
         i++;
