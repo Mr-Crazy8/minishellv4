@@ -3,7 +3,6 @@
 //A variable used as the redirection target is empty or unset
 //A variable expands to multiple words (creating confusion about which one is the target)
 
-
 void ambiguous_checker(t_redir *redir)
 {
     t_redir *tmp;

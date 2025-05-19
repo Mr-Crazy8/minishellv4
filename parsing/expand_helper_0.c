@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/18 17:31:25 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/18 18:55:41 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -384,9 +384,7 @@ void process_quotes_for_cmd_hp(t_cmd *current, t_env *env, int *i, int remove_mo
     (*i) = 0;
     while (current->args[(*i)] && current->args_befor_quotes_remover && current->args_befor_quotes_remover[(*i)])
     {
-        processed = NULL; // Reset processed for each iteration
-
-        // Special handling for export command with $ at start of argument
+        processed = NULL;
         if (current->cmd && strcmp(current->cmd, "export") == 0 && 
             current->args_befor_quotes_remover[(*i)][0] == '$' && 
             strchr(current->args_befor_quotes_remover[(*i)], '='))
@@ -460,15 +458,15 @@ void process_quotes_for_cmd_hp(t_cmd *current, t_env *env, int *i, int remove_mo
             free_split_array(split);
             split = NULL;
         }
-        else if (strchr(current->args_befor_quotes_remover[(*i)], '$') != NULL)
+        else if (strchr(current->args[(*i)], '\"') == NULL && strchr(current->args[(*i)], '\'') == NULL && strchr(current->args_befor_quotes_remover[(*i)], '$') != NULL)
         {
-            processed = selective_remove_quotes(current->args[(*i)], 0);
+            remove_mode = 0;
+            processed = selective_remove_quotes(current->args[(*i)], remove_mode);
         }
         else
         {
             processed = selective_remove_quotes(current->args[(*i)], remove_mode);
         }
-        
         if (processed)
         {
             free(current->args[(*i)]);

@@ -14,7 +14,6 @@ char **split_if_needed(char *str)
     i = 0;
     if (!str || !*str || (!strchr(str, ' ') && !strchr(str, '\t') && !strchr(str, '\n')))
         return NULL;
-    // result = ft_split(str, ' ');
     result = ft_split_q(str, ' ');
     count = 0;
     if (result) 
@@ -221,7 +220,10 @@ void split_the_rest(t_cmd *current, int should_split)
 
     if (!should_split || !current->args)
         return;
-    i = 1;
+    i = 0;
+    // if (current->args[i] == NULL)
+    //     return ;
+    // i++;
     while (current->args && current->args[i])
     {
         equals = strchr(current->args[i], '=');
