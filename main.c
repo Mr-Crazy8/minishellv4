@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/19 10:42:02 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/19 16:08:55 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ int main(int argc, char *argv[], char *env[])
 		add_history(input);
 		if (check_quotes(input))
 		{
-			// Error message already printed by check_quotes
+			exit_status = get_or_set(SET, 258);
 			free(input);
 			continue;
 		}
@@ -188,6 +188,7 @@ int main(int argc, char *argv[], char *env[])
          if (!preprocessed_input)
             continue;
 		token_list = tokin_list_maker(preprocessed_input);
+		// if (token_list && (error_pipi(token_list)  || check_syntax_errors(token_list)))
 		if (token_list && !error_pipi(token_list)  && !check_syntax_errors(token_list))
 		{
 			// printf("--- TOKENS ---\n");
@@ -200,7 +201,7 @@ int main(int argc, char *argv[], char *env[])
 			expand_handle(cmd, env_struct,exit_status);
 			// ft_excute(cmd);
 			ambiguous_finder(cmd);
-			process_quotes_for_cmd(cmd, env_struct,  1);
+			process_quotes_for_cmd(cmd, 1);
 			file_opener(cmd);
 			print_ambiguous_redir_errors(cmd);
 			//puts("hshsh");
@@ -219,7 +220,13 @@ int main(int argc, char *argv[], char *env[])
 				// if (cmd)
 				// 	free_cmd_list(cmd);
 			}
-		}   
+		}
+		else
+		{
+			cmd->data.exit_status = get_or_set(SET, 258);   
+			/* code */
+		}
+		
 		free_token_list(token_list);
 		// free(input);
 	}

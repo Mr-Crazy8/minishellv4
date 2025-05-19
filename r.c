@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:33:44 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/15 19:06:44 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/19 15:44:42 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ void ft_excute_commands(t_cmd *cmd, t_env **env_list)
     }
     else if(child_pid > 0)
     {
-        puts("True");
+        //puts("True");
         wait_for_children(cmd, child_pid);
     }
     else

@@ -2,7 +2,37 @@
 
 #include "parsing.h"
 
-
+int should_split_arg(char *arg, char *original_arg)
+{
+    char *equals;
+    char *orig_equals = NULL;
+    
+    // No argument or empty argument
+    if (!arg || !*arg)
+        return 0;
+    
+    // Check if argument contains $ (variable expansion)
+    if (strchr(arg, '$'))
+        return 1;
+    
+    // Check if this is a variable assignment
+    equals = strchr(arg, '=');
+    if (!equals)
+        return 0;  // Not a variable assignment
+    
+    // Variable name starts with a digit
+    if (isdigit(arg[0]))
+        return 1;
+    
+    // Check original argument (before quotes removal) if available
+    if (original_arg) {
+        orig_equals = strchr(original_arg, '=');
+        if (orig_equals && check_var_quotes(original_arg, orig_equals))
+            return 1;
+    }
+    
+    return 0;  // Default: don't split
+}
 
 
 char **split_if_needed(char *str)
@@ -48,6 +78,20 @@ void free_string_array(char **array)
 }
 
 
+// int check_var_quotes(char *orig_arg, char *orig_equals)
+// {
+//     int j;
+    
+//     j = 0;
+//     while (j < (orig_equals - orig_arg))
+//     {
+//         if (orig_arg[j] == '\'' || orig_arg[j] == '"' || orig_arg[j] == '$') 
+//             return 1;  // Variable name had quotes or $ - split
+//         j++;
+//     }
+//     return 0;
+// }
+
 int check_var_quotes(char *orig_arg, char *orig_equals)
 {
     int j;
@@ -56,11 +100,19 @@ int check_var_quotes(char *orig_arg, char *orig_equals)
     while (j < (orig_equals - orig_arg))
     {
         if (orig_arg[j] == '\'' || orig_arg[j] == '"' || orig_arg[j] == '$') 
-            return 1;  // Variable name had quotes or $ - split
+            return 1;  // Variable name has quotes or $ - split
         j++;
     }
+    
+    // Check if variable name starts with a digit (0-9)
+    if (isdigit(orig_arg[0]))
+        return 1;
+        
     return 0;
 }
+
+
+
 
 int check_export_cmd(t_cmd *cmd)
 {
@@ -77,31 +129,47 @@ int check_export_cmd(t_cmd *cmd)
     return 2;  // Continue checking
 }
 
+// int is_special_export_case(t_cmd *cmd)
+// {
+//     int i;
+//     char *equals;
+//     char *orig_arg;
+//     char *orig_equals;
+//     int cmd_check;
+    
+//     cmd_check = check_export_cmd(cmd);
+//     if (cmd_check == 0 || cmd_check == 1)
+//         return cmd_check;
+//     i = 1;
+//     while (cmd->args[i]) 
+//     {
+//         equals = strchr(cmd->args[i], '=');
+//         if (equals && cmd->args_befor_quotes_remover && cmd->args_befor_quotes_remover[i]) 
+//         {
+//             orig_arg = cmd->args_befor_quotes_remover[i];
+//             orig_equals = strchr(orig_arg, '=');
+//             if (orig_equals && check_var_quotes(orig_arg, orig_equals))
+//                 return 1;
+//         }
+//         i++;
+//     }
+//     return 0;
+// }
+
 int is_special_export_case(t_cmd *cmd)
 {
-    int i;
-    char *equals;
-    char *orig_arg;
-    char *orig_equals;
-    int cmd_check;
+    // This function will no longer set a global split flag
+    // Instead, it will return:
+    // 0 - Not export command or no special case detected
+    // 1 - It's export command and we need to check each argument individually
     
-    cmd_check = check_export_cmd(cmd);
-    if (cmd_check == 0 || cmd_check == 1)
-        return cmd_check;
-    i = 1;
-    while (cmd->args[i]) 
-    {
-        equals = strchr(cmd->args[i], '=');
-        if (equals && cmd->args_befor_quotes_remover && cmd->args_befor_quotes_remover[i]) 
-        {
-            orig_arg = cmd->args_befor_quotes_remover[i];
-            orig_equals = strchr(orig_arg, '=');
-            if (orig_equals && check_var_quotes(orig_arg, orig_equals))
-                return 1;
-        }
-        i++;
-    }
-    return 0;
+    if (!cmd || !cmd->cmd || !cmd->args || !cmd->args[0])
+        return 0;
+        
+    if (strcmp(cmd->cmd, "export") != 0)
+        return 0;  // Not export command
+        
+    return 1;  // It's export command, we'll check each argument individually
 }
 
 
@@ -183,51 +251,135 @@ int rebuild_cmd_args(char **new_args, t_cmd *current, char **split,
     return i + word_count - 1;
 }
 
+// void split_the_rest_helper(char *equals, int should_split, t_cmd *current, int *i)
+// {
+//     char **split;
+//     int word_count;
+//     char **new_args;
+
+//        if (!current->args[(*i)] || !should_split)
+//         return;
+
+//     if (!equals || should_split)
+//     {
+//             split = split_if_needed(current->args[(*i)]);
+//             if (split && split[1])
+//             {
+//                 word_count = ft_lint(split);
+//                 new_args = malloc(sizeof(char *) * 
+//                            (ft_lint(current->args) + word_count));
+                
+//                 if (new_args)
+//                 {
+//                     prepare_new_args(new_args, current, (*i));
+//                     (*i) = rebuild_cmd_args(new_args, current, split, 
+//                                         (*i), word_count);
+//                 }
+//             }
+//             if (split)
+//                 free_string_array(split);
+//     }
+// }
+
 void split_the_rest_helper(char *equals, int should_split, t_cmd *current, int *i)
 {
     char **split;
     int word_count;
     char **new_args;
+    int force_split = 0;
 
-       if (!current->args[(*i)] || !should_split)
+    // Check if we need to force a split based on variable name criteria
+    if (current->args[(*i)] && equals)
+    {
+        // If variable name starts with a number, force split
+        if (isdigit(current->args[(*i)][0]))
+            force_split = 1;
+            
+        // If variable name contains quotes, force split
+        if (current->args_befor_quotes_remover && current->args_befor_quotes_remover[(*i)])
+        {
+            char *orig_equals = strchr(current->args_befor_quotes_remover[(*i)], '=');
+            if (orig_equals && check_var_quotes(current->args_befor_quotes_remover[(*i)], orig_equals))
+                force_split = 1;
+        }
+    }
+
+    if (!current->args[(*i)] || (!should_split && !force_split))
         return;
 
-    if (!equals || should_split)
+    if (!equals || should_split || force_split)
     {
-            split = split_if_needed(current->args[(*i)]);
-            if (split && split[1])
+        split = split_if_needed(current->args[(*i)]);
+        if (split && split[1])
+        {
+            word_count = ft_lint(split);
+            new_args = malloc(sizeof(char *) * 
+                       (ft_lint(current->args) + word_count));
+            
+            if (new_args)
             {
-                word_count = ft_lint(split);
-                new_args = malloc(sizeof(char *) * 
-                           (ft_lint(current->args) + word_count));
-                
-                if (new_args)
-                {
-                    prepare_new_args(new_args, current, (*i));
-                    (*i) = rebuild_cmd_args(new_args, current, split, 
-                                        (*i), word_count);
-                }
+                prepare_new_args(new_args, current, (*i));
+                (*i) = rebuild_cmd_args(new_args, current, split, 
+                                    (*i), word_count);
             }
-            if (split)
-                free_string_array(split);
+        }
+        if (split)
+            free_string_array(split);
     }
 }
+
+// void split_the_rest(t_cmd *current, int should_split)
+// {
+//     int i;
+//     char *equals;
+
+//     if (!should_split || !current->args)
+//         return;
+//     i = 0;
+//     // if (current->args[i] == NULL)
+//     //     return ;
+//     // i++;
+//     while (current->args && current->args[i])
+//     {
+//         equals = strchr(current->args[i], '=');
+//         split_the_rest_helper(equals, should_split, current, &i);
+//         i++;
+//     }
+// }
 
 void split_the_rest(t_cmd *current, int should_split)
 {
     int i;
     char *equals;
+    int arg_should_split;
 
-    if (!should_split || !current->args)
+    if (!current->args)
         return;
-    i = 0;
-    // if (current->args[i] == NULL)
-    //     return ;
-    // i++;
-    while (current->args && current->args[i])
-    {
+    
+    // If it's not export command, use the global should_split flag
+    if (!current->cmd || strcmp(current->cmd, "export") != 0) {
+        i = 0;
+        while (current->args && current->args[i]) {
+            equals = strchr(current->args[i], '=');
+            split_the_rest_helper(equals, should_split, current, &i);
+            i++;
+        }
+        return;
+    }
+    
+    // For export command, check each argument individually
+    i = 1;  // Skip the 'export' command itself (args[0])
+    while (current->args && current->args[i]) {
         equals = strchr(current->args[i], '=');
-        split_the_rest_helper(equals, should_split, current, &i);
+        
+        // Determine if this specific argument should be split
+        arg_should_split = should_split_arg(
+            current->args[i], 
+            (current->args_befor_quotes_remover && current->args_befor_quotes_remover[i]) ? 
+                current->args_befor_quotes_remover[i] : NULL
+        );
+        
+        split_the_rest_helper(equals, arg_should_split, current, &i);
         i++;
     }
 }
@@ -260,18 +412,39 @@ void cmd_splitting(t_cmd *cmd_list )
 }
 
 
+// void apply_word_splitting(t_cmd *cmd_list)
+// {
+//     t_cmd *current = cmd_list;
+//     int should_split;
+//     while (current)
+//     {
+//         cmd_splitting(current);
+//         should_split = 1; 
+//         if (current->cmd && strcmp(current->cmd, "export") == 0) 
+//         {
+//             should_split = is_special_export_case(current);
+//         }
+//         split_the_rest(current, should_split);
+//         current = current->next;
+//     }
+// }
+
 void apply_word_splitting(t_cmd *cmd_list)
 {
     t_cmd *current = cmd_list;
     int should_split;
+    
     while (current)
     {
         cmd_splitting(current);
-        should_split = 1; 
-        if (current->cmd && strcmp(current->cmd, "export") == 0) 
-        {
+        
+        should_split = 1; // Default behavior for non-export commands
+        
+        if (current->cmd && strcmp(current->cmd, "export") == 0) {
+            // For export command, we'll handle each argument individually in split_the_rest
             should_split = is_special_export_case(current);
         }
+        
         split_the_rest(current, should_split);
         current = current->next;
     }
