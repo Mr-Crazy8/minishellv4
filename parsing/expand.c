@@ -398,16 +398,16 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
         i = 0;
         while (current->args && current->args[i])
         {
-            if ((current->args[i][0] == '\'' && current->args[i][strlen(current->args[i]) - 1] == '\'') ||
-                (current->args[i][0] == '"' && current->args[i][strlen(current->args[i]) - 1] == '"'))
-                should_split = 0;
-            else
-            {
-                if (strchr(current->args[i], '$'))
-                    should_split = 1;
-                else if (strcmp(current->args[i], "export"))
-                    should_split = 1;
-            }
+          if ((current->args[i][0] == '\'' && current->args[i][strlen(current->args[i]) - 1] == '\'') ||
+            (current->args[i][0] == '"' && current->args[i][strlen(current->args[i]) - 1] == '"'))
+    should_split = 0;
+        else
+        {
+            if (strchr(current->args[i], '$'))
+                should_split = 1;
+            else 
+                should_split = 1;  // For other commands or non-export args
+    }
             process_string(current->args[i], expand, env, exit_status);
             
             // If this argument expanded to empty and it contains a variable, remove it
