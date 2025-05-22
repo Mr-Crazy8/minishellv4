@@ -68,7 +68,16 @@ int	ft_isalnum(int c)
 
 int	is_valid_var_char(char c)
 {
-	if ((ft_isalnum(c)) || (c == '_'))
+	static int flag_pls = 0;
+
+	if (c == '+')
+		flag_pls++;
+	if (flag_pls > 1)
+	{
+		flag_pls = 0;
+		return 0;
+	}
+	else if ((flag_pls == 1 || flag_pls == 0) || ((ft_isalnum(c)) || (c == '_')))
 		return (1);
 	else
 		return (0);

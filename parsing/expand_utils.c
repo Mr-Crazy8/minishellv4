@@ -1,14 +1,29 @@
 //expand_utils.c
 
 #include "parsing.h"
+int pls_conter(char *str)
+{
+    int i = 0;
+    int pls_count = 0;
+    while (str[i])
+    {
+        if (str[i] == '+')
+            pls_count++;
+        i++;
+    }
+
+    printf("pls_count : %d\n", pls_count);
+    return pls_count;
+}
 
 int is_valid_var_name(char *str, int len)
 {
     if (!str || len <= 0)
         return 0;
-
-    if (!isalpha(str[0]) && str[0] != '_')
+    if ((!isalpha(str[0]) && str[0] != '_'))
         return 0;
+
+
     
     for (int i = 1; i < len; i++) {
         if (!is_valid_var_char(str[i]))
@@ -87,20 +102,6 @@ void free_string_array(char **array)
     free(array);
 }
 
-int pls_conter(char *str)
-{
-    int i = 0;
-    int pls_count = 0;
-    while (str[i])
-    {
-        if (str[i] == '+')
-            pls_count++;
-        i++;
-    }
-
-    printf("pls_count : %d\n", pls_count);
-    return pls_count;
-}
 
 int check_var_quotes(char *orig_arg, char *orig_equals)
 {
