@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 18:26:45 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/16 14:15:23 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/21 15:54:14 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,9 +131,6 @@ int ft_exit(char **args, t_data data, t_env *env)
     data.exit_status = get_or_set(SET, (int)n);
     exit(data.exit_status);
 }
-
-
-
 
 
 

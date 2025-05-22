@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/19 11:52:29 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/20 18:54:29 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,6 +251,7 @@ char *selective_remove_quotes(char *str, int remove_mode)
     
 // }
 
+
 void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode)
 {
     char *processed;
@@ -262,10 +263,8 @@ void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode)
             (*i) = 0;
             while (current->args[(*i)])
             {
-                // if (check_export_quotes_case(current->args[(*i)]) == 1)
-                // {
-                //     remove_mode = export_quotes_handle(current->args[(*i)]);
-                // }
+
+                if (current->args[(*i)])
                 processed = selective_remove_quotes(current->args[(*i)], remove_mode);
                 if (processed)
                 {

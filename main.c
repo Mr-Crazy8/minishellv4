@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/19 16:08:55 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/21 15:10:28 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,32 +92,46 @@ void add_one_shlvl(t_env *env)
 {
     t_env *tmp = env;
     int shl_vl = 0;
+    int found = 0;
 
-	if (!env) 
-		return;
+    if (!env) 
+        return;
     while (tmp) 
     {
-        if (tmp->key) 
+        if (tmp->key && strcmp(tmp->key, "SHLVL") == 0)
         {
-			if (tmp->key && strcmp(tmp->key, "SHLVL") == 0)
-			{
-            	if (tmp->value && tmp->value[0] != '\0')
-            	{
-                	shl_vl = atoi(tmp->value);
-                	free(tmp->value);
-					tmp->value = NULL;
-            	}
+            found = 1;  // Mark that we found SHLVL
+            if (tmp->value && tmp->value[0] != '\0')
+            {
+				// printf("SHLVL BEFOR : %s\n", tmp->value);
+                shl_vl = atoi(tmp->value);
+                free(tmp->value);
+                tmp->value = NULL;
+            }
+            
             shl_vl++; 
             tmp->value = ft_itoa(shl_vl);
+			// printf("SHLVL AFTER : %s\n", tmp->value);
             if (!tmp->value) 
-			{
-                    tmp->value = strdup("1");
-            }
+                tmp->value = strdup("1");
             break;
-				
-			}
         }
         tmp = tmp->next;
+    }
+    if (!found && env)
+    {
+        t_env *new_node = malloc(sizeof(t_env));
+        if (!new_node)
+            return;
+            
+        new_node->key = strdup("SHLVL");
+        new_node->value = strdup("1");
+        new_node->is_not_active = 0;
+        new_node->next = NULL;
+        tmp = env;
+        while (tmp->next)
+            tmp = tmp->next;
+        tmp->next = new_node;
     }
 }
 
@@ -222,10 +236,7 @@ int main(int argc, char *argv[], char *env[])
 			}
 		}
 		else
-		{
-			cmd->data.exit_status = get_or_set(SET, 258);   
-			/* code */
-		}
+			exit_status = get_or_set(SET, 258);   
 		
 		free_token_list(token_list);
 		// free(input);
@@ -233,3 +244,17 @@ int main(int argc, char *argv[], char *env[])
 	free_env_struct(env_struct);
 	return 0;
 }
+
+// char *expand_exit_status(int exit_status)
+// {
+// 	return(ft_itoa(exit_status));
+// }
+
+
+
+// if (strchr(str[i], "$?") != NULL)
+// 	{
+// 		char *exit_status = expand_exit_status(int exit_status);
+// 	}
+
+

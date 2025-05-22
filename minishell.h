@@ -190,7 +190,7 @@ char	*ft_strjoin(char const *s1, char const *s2);
 void	ft_lstadd_back(t_env **lst, t_env *new);
 // char	*ft_substr(char *s, unsigned int start, size_t len);
 char    *ft_substr(char const *s, unsigned int start, size_t len);
-void apply_word_splitting(t_cmd *cmd_list);
+// void apply_word_splitting(t_cmd *cmd_list);
 // int expand_fill_str(t_exp_helper *expand, char *str);
 int expand_fill_str(t_exp_helper *expand, char *str);
 char	**free_split(char **split, size_t j);

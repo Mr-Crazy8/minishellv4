@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 15:22:58 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/18 11:25:08 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/22 12:18:19 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,16 +132,69 @@ void check_close_red(t_cmd *cmd, t_cmd *prev)
         }
         ft_redircte(cmd->redirs);
 }
+// void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
+// {
+//     pid_t pid;
+//     t_cmd *prev = NULL;
+//     t_cmd *head = NULL;
+
+//     head = cmd;
+//     pipe_all(cmd);
+    
+
+//     while (cmd)
+//     {
+//         pid = fork();
+//         if (pid < 0)
+//         {
+//             perror("fork");
+//             close_all_pipes(head);
+//             return;
+//         }
+//         else if (pid == 0)
+//         {
+//             // ft_redircte(cmd->redirs);
+
+//             if (prev && prev->pipe_out)
+//                 dup2(prev->fd_pipe[0], 0);
+//             if (cmd->pipe_out)
+//                 dup2(cmd->fd_pipe[1], 1);
+//             if(cmd->redirs != NULL)
+//                 check_close_red(cmd, prev);
+
+//             close_all_pipes(head);
+//             // if(cmd->redirs->fd != -1)
+//             execute_single_command(cmd, list_env, env);
+//             exit(0); 
+//         }
+
+//         // Parent closes previous pipe ends
+//         if (prev && prev->pipe_out)
+//         {
+//             close(prev->fd_pipe[0]);
+//             close(prev->fd_pipe[1]);
+//         }
+
+//         prev = cmd;
+//         cmd = cmd->next;
+//     }
+
+//     // close_all_pipes(head); // close remaining pipes
+//     while (wait(NULL) > 0)
+//         ;
+// }
+
 void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
 {
     pid_t pid;
     t_cmd *prev = NULL;
     t_cmd *head = NULL;
+    int status;
+    int last_status = 0;  // To store the exit status of the last command
 
     head = cmd;
     pipe_all(cmd);
     
-
     while (cmd)
     {
         pid = fork();
@@ -153,8 +206,6 @@ void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
         }
         else if (pid == 0)
         {
-            // ft_redircte(cmd->redirs);
-
             if (prev && prev->pipe_out)
                 dup2(prev->fd_pipe[0], 0);
             if (cmd->pipe_out)
@@ -163,9 +214,8 @@ void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
                 check_close_red(cmd, prev);
 
             close_all_pipes(head);
-            // if(cmd->redirs->fd != -1)
             execute_single_command(cmd, list_env, env);
-            exit(0); 
+            exit(cmd->data.exit_status);
         }
 
         // Parent closes previous pipe ends
@@ -179,10 +229,20 @@ void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
         cmd = cmd->next;
     }
 
-    // close_all_pipes(head); // close remaining pipes
-    while (wait(NULL) > 0)
-        ;
+    // Wait for all child processes and get the status of the last one
+    pid_t wpid;
+    while ((wpid = wait(&status)) > 0)
+    {
+        if (WIFEXITED(status))
+        {
+            last_status = WEXITSTATUS(status);
+        }
+    }
+    
+    // Set the exit status to the last command's status
+    get_or_set(SET, last_status);
 }
+
 
 // // Close all pipes to prevent leaks
 
@@ -387,3 +447,6 @@ void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
 //     }
     
 // }
+
+
+

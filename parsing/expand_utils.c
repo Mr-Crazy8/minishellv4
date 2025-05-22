@@ -87,6 +87,20 @@ void free_string_array(char **array)
     free(array);
 }
 
+int pls_conter(char *str)
+{
+    int i = 0;
+    int pls_count = 0;
+    while (str[i])
+    {
+        if (str[i] == '+')
+            pls_count++;
+        i++;
+    }
+
+    printf("pls_count : %d\n", pls_count);
+    return pls_count;
+}
 
 int check_var_quotes(char *orig_arg, char *orig_equals)
 {
@@ -101,7 +115,7 @@ int check_var_quotes(char *orig_arg, char *orig_equals)
     }
     
     // Check if variable name starts with a digit or invalid character
-    if (isdigit(orig_arg[0]) || (!isalpha(orig_arg[0]) && orig_arg[0] != '_'))
+    if (((isdigit(orig_arg[0]) || (!isalpha(orig_arg[0]) && orig_arg[0] != '_'))))
         return 1;
         
     return 0;
@@ -220,9 +234,10 @@ void split_the_rest_helper(char *equals, int should_split, t_cmd *current, int *
     char **new_args;
     int force_split = 0;
 
-    // Check if we need to force a split based on variable name criteria
     if (current->args[(*i)] && equals)
     {
+    //    if  (pls_conter(current->args[(*i)]) > 1)
+    //         force_split = 1;
         // If variable name starts with a number, force split
         if (isdigit(current->args[(*i)][0]))
             force_split = 1;
@@ -304,7 +319,7 @@ void split_the_rest_helper(char *equals, int should_split, t_cmd *current, int *
 //     }
 // }
 
-void split_the_rest(t_cmd *current, int should_split)
+void split_the_rest(t_cmd *current, int should_split, int had_removed_var)
 {
     int i;
     char *equals;
@@ -329,12 +344,16 @@ void split_the_rest(t_cmd *current, int should_split)
         
         // For the case of "export $a" where $a has been expanded to a value
         // We need to make sure it gets split even if it doesn't contain an equals sign
-        if (!equals && current->args_befor_quotes_remover && i < ft_lint(current->args_befor_quotes_remover) && 
-            current->args_befor_quotes_remover[i] && strchr(current->args_befor_quotes_remover[i], '$')) {
+        if (had_removed_var == 1)
+            arg_should_split = 1;
+        else if (!equals && current->args_befor_quotes_remover && i < ft_lint(current->args_befor_quotes_remover) && 
+            current->args_befor_quotes_remover[i] && strchr(current->args_befor_quotes_remover[i], '$')) 
+            {
             // This was originally a variable that got expanded
             arg_should_split = 1;  // Force splitting for expanded variables
         }
-        else if (current->args_befor_quotes_remover && i < ft_lint(current->args_befor_quotes_remover)) {
+        else if (current->args_befor_quotes_remover && i < ft_lint(current->args_befor_quotes_remover)) 
+        {
             arg_should_split = should_split_arg(
                 current->args[i], 
                 current->args_befor_quotes_remover[i]
@@ -377,7 +396,7 @@ void cmd_splitting(t_cmd *cmd_list )
 
 
 
-void apply_word_splitting(t_cmd *cmd_list)
+void apply_word_splitting(t_cmd *cmd_list, t_exp_helper *expand)
 {
     t_cmd *current = cmd_list;
     int should_split;
@@ -391,8 +410,8 @@ void apply_word_splitting(t_cmd *cmd_list)
         if (current->cmd && strcmp(current->cmd, "export") == 0) {
             should_split = is_special_export_case(current);
         }
-        
-        split_the_rest(current, should_split);
+        split_the_rest(current, should_split, expand->had_removed_var);
         current = current->next;
     }
+     free(expand);
 }

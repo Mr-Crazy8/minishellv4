@@ -87,6 +87,7 @@ typedef struct s_exp_helper {
     int start;
     size_t buffer_size;
     int var_expanded;
+    int had_removed_var;
     
 } t_exp_helper;
 
@@ -128,16 +129,21 @@ void prepare_new_args(char **new_args, t_cmd *current, int i);
 int rebuild_cmd_args(char **new_args, t_cmd *current, char **split, 
                     int i, int word_count);
 void split_the_rest_helper(char *equals, int should_split, t_cmd *current, int *i);
-void split_the_rest(t_cmd *current, int should_split);
+// void split_the_rest(t_cmd *current, int should_split);
+void split_the_rest(t_cmd *current, int should_split, int had_removed_var);
 void cmd_splitting(t_cmd *cmd_list );
-void apply_word_splitting(t_cmd *cmd_list);
+// void apply_word_splitting(t_cmd *cmd_list);
+void apply_word_splitting(t_cmd *cmd_list, t_exp_helper *expand);
 
 
 int expand_handle_helper0(t_exp_helper *expand);
 int ensure_buffer_space(t_exp_helper *expand, size_t additional_needed);
-int helper3(t_exp_helper *expand, int exit_status);
-int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env);
-void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status);
+// int helper3(t_exp_helper *expand, int exit_status);
+// int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env);
+// void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status);
+void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status, int pipe_out);
+int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int pipe_out);
+int helper3(t_exp_helper *expand, int exit_status, int pipe_out);
 void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status);
 
 void free_redirs(t_redir *redir_list);
