@@ -1,20 +1,7 @@
 //expand_utils.c
 
 #include "parsing.h"
-int pls_conter(char *str)
-{
-    int i = 0;
-    int pls_count = 0;
-    while (str[i])
-    {
-        if (str[i] == '+')
-            pls_count++;
-        i++;
-    }
 
-    printf("pls_count : %d\n", pls_count);
-    return pls_count;
-}
 
 int is_valid_var_name(char *str, int len)
 {
@@ -330,9 +317,11 @@ void split_the_rest(t_cmd *current, int should_split, int had_removed_var)
         return;
     
     // If it's not export command, use the global should_split flag
-    if (!current->cmd || strcmp(current->cmd, "export") != 0) {
+    if (!current->cmd || strcmp(current->cmd, "export") != 0) 
+    {
         i = 0;
-        while (current->args && current->args[i]) {
+        while (current->args && current->args[i]) 
+        {
             equals = strchr(current->args[i], '=');
             split_the_rest_helper(equals, should_split, current, &i);
             i++;

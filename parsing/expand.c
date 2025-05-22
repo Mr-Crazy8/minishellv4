@@ -80,6 +80,15 @@ int helper3(t_exp_helper *expand, int exit_status, int pipe_out)
 	}
 	return (0);
 }
+int	ft_isdigiti(int c)
+{
+	if (c >= '0' && c <= '9')
+	{
+		return (1);
+	}
+	else
+		return (0);
+}
 
 
 
@@ -93,7 +102,7 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int
         if (helper3(expand, exit_status, pipe_out) == 0)
         {
             expand->start = expand->i;
-            if (isdigit(expand->original[expand->i])) 
+            if (ft_isdigiti(expand->original[expand->i])) 
             {
                 expand->i++;
             } 
@@ -108,8 +117,6 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int
                 fprintf(stderr, "minishell: memory allocation failed: variable name too long\n");
                 return (0);
             }
-            
-            // Handle empty variable name ($)
             if (var_len == 0) {
                 if (!ensure_buffer_space(expand, 1)) {
                     return (0);
@@ -194,105 +201,23 @@ void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status
 }
 
 
-
-// void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
-// {
-//     t_cmd *current;
-//     t_exp_helper *expand;
-//     t_redir *redir;
-//     int i;
-//     int should_split = 0;
-
-//     expand = malloc(sizeof(t_exp_helper));
-//     if (!expand)
-//     {
-//         fprintf(stderr, "minishell: memory allocation failed\n");
-//         exit(1);
-//     }
-//     expand->buffer_size = 0;
-//     expand->expanded = NULL;
-
-//     current = cmd_list;
-//     while (current)
-//     {
-//         should_split = 0;
-        
-//         // Process all args first (including cmd which is stored in args[0])
-//         i = 0;
-//         while (current->args && current->args[i])
-//         {
-//             if ((current->args[i][0] == '\'' && current->args[i][strlen(current->args[i]) - 1] == '\'') ||
-//                 (current->args[i][0] == '"' && current->args[i][strlen(current->args[i]) - 1] == '"'))
-//                 should_split = 0;
-//             else
-//             {
-//                 if (strchr(current->args[i], '$'))
-//                     should_split = 1;
-//                 else if (strcmp(current->args[i], "export"))
-//                     should_split = 1;
-//             }
-//             process_string(current->args[i], expand, env, exit_status);
-            
-//             // If this argument expanded to empty and it contains a variable, remove it
-//             if (expand->expanded && expand->expanded[0] == '\0' && 
-//                 strchr(current->args[i], '$'))
-//             {
-//                 free(current->args[i]);
-//                 free(expand->expanded);
-//                 expand->expanded = NULL;
-                
-//                 // Shift all following arguments forward
-//                 int j = i;
-//                 while (current->args[j + 1])
-//                 {
-//                     current->args[j] = current->args[j + 1];
-//                     j++;
-//                 }
-//                 current->args[j] = NULL;
-                
-//                 // Don't increment i since we need to process the new argument at this position
-//             }
-//             else
-//             {
-//                 free(current->args[i]);
-//                 current->args[i] = expand->expanded;
-//                 expand->expanded = NULL;
-//                 i++;
-//             }
-//         }
-        
-//         // Now that args are processed, update cmd to be the first arg
-//         if (current->args && current->args[0])
-//         {
-//             if (current->cmd)
-//                 free(current->cmd);
-//             current->cmd = strdup(current->args[0]);
-//             if (!current->cmd)
-//             {
-//                 fprintf(stderr, "minishell: memory allocation failed\n");
-//                 exit(1);
-//             }
-//         }
-
-//         redir = current->redirs;
-//         while (redir)
-//         {
-//             if (redir->file)
-//             {
-//                 process_string(redir->file, expand, env, exit_status);
-//                 free(redir->file);
-//                 redir->file = expand->expanded;
-//                 expand->expanded = NULL;
-//             }
-//             redir = redir->next;
-//         }
-//         current = current->next;
-//     }
-
-//     free(expand);
-//     if (should_split)
-//         apply_word_splitting(cmd_list);
-// }
+int pls_conter(char *str)
+{
+    int i = 0;
+    int pls_count = 0;
+    while (str[i])
+    {
+        if (str[i] == '+')
+            pls_count++;
+        i++;
+    }
+    i = 0;
+    while (str[i] && str[i] != '+')
+        i++;
+    if (str[i] == '+' && str[i + 1] == '=' && (pls_count == 0 || pls_count == 1) && strchr(str, '\'') == NULL && strchr(str, '\"') == NULL)
+        return 1;
+    return 0;
+}
 
 void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
 {
@@ -301,6 +226,7 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
     t_redir *redir;
     int i;
     int should_split = 0;
+    int pls_case = 0;
     int had_empty_var = 0;
 
     expand = malloc(sizeof(t_exp_helper));
@@ -320,19 +246,24 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
         i = 0;
         while (current->args && current->args[i])
         {
+           if (pls_conter(current->args[i]) == 1)
+                pls_case = 1;
           if ((current->args[i][0] == '\'' && current->args[i][strlen(current->args[i]) - 1] == '\'') ||
             (current->args[i][0] == '"' && current->args[i][strlen(current->args[i]) - 1] == '"'))
-    should_split = 0;
+                should_split = 0;
         else
         {
             if (strchr(current->args[i], '$'))
+            {
                 should_split = 1;
+            }
             else 
+            {
                 should_split = 1;  // For other commands or non-export args
+            }
         }
+
             process_string(current->args[i], expand, env, exit_status, cmd_list->pipe_out);
-            
-            // If this argument expanded to empty and it contains a variable, remove it
             if (expand->expanded && expand->expanded[0] == '\0' && 
                 strchr(current->args[i], '$'))
             {
@@ -367,8 +298,6 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
                     j++;
                 }
                 current->args[j] = NULL;
-                
-                // Don't increment i since we need to process the new argument at this position
             }
             else
             {
@@ -378,13 +307,12 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
                 i++;
             }
         }
-        
-        // Now that args are processed, update cmd to be the first arg
+       
         if (current->args && current->args[0])
         {
             if (current->cmd)
                 free(current->cmd);
-            current->cmd = strdup(current->args[0]);
+            current->cmd = ft_strdup(current->args[0]);
             if (!current->cmd)
             {
                 fprintf(stderr, "minishell: memory allocation failed\n");
@@ -406,8 +334,9 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
         }
         current = current->next;
     }
+    if (pls_case == 1 && should_split == 1) 
+        should_split = 0;
 
-   
     if (should_split || had_empty_var)
         apply_word_splitting(cmd_list, expand);
 }

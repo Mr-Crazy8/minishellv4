@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/21 15:10:28 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/22 19:37:38 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,7 @@ int main(int argc, char *argv[], char *env[])
 	while (1)
 	{
 		input = readline("minishell $> ");
+		// input = strdup("\"'\"$USER\"'\"");
 		// cmd = NULL;
 		if (!input)
 			break;
@@ -215,7 +216,7 @@ int main(int argc, char *argv[], char *env[])
 			expand_handle(cmd, env_struct,exit_status);
 			// ft_excute(cmd);
 			ambiguous_finder(cmd);
-			process_quotes_for_cmd(cmd, 1);
+			process_quotes_for_cmd(cmd, env_struct, 1);
 			file_opener(cmd);
 			print_ambiguous_redir_errors(cmd);
 			//puts("hshsh");
