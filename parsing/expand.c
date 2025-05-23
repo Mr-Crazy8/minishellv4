@@ -183,7 +183,7 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int
 {
     char *var;
     var = NULL;
-    if (expand->original[expand->i] == '$' && expand->quote_state != 1)
+    if (expand->original[expand->i] == '$' && expand->quote_state != 1) // Not in single quotes
     {
         expand->i++;
         if (helper3(expand, exit_status, pipe_out) == 0)
@@ -194,10 +194,12 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int
                 expand->i++;
             } 
             // Handle case where $ is followed by a quote (like $"HOME" or $'HOME')
-            else if (expand->original[expand->i] == '"' || expand->original[expand->i] == '\'') 
+            // But ONLY if the $ itself is not inside double quotes
+            else if ((expand->original[expand->i] == '"' || expand->original[expand->i] == '\'') && 
+                     expand->quote_state == 0) // $ is not inside any quotes
             {
-                // Check if it's exactly one $ followed by a quote (not $$"HOME")
-                if (expand->i > 1 && expand->original[expand->i - 2] == '$') 
+                // Check if it's $$"HOME" case by looking at the character before the first $
+                if (expand->i >= 2 && expand->original[expand->i - 2] == '$') 
                 {
                     // This is $$"HOME" case, don't remove the $
                     if (!ensure_buffer_space(expand, 1)) {
@@ -206,7 +208,7 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int
                     expand->expanded[expand->j++] = '$';
                     return (1);
                 }
-                // Single $ followed by quote - remove the $ and continue
+                // Single $ followed by quote and $ is not in quotes - remove the $ and continue
                 // Don't increment i, let the quote be processed normally
                 return (1);
             }

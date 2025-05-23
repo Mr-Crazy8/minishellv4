@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/23 16:17:05 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/23 17:13:28 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ char *check_export_case(char *str, char *befor, int remove_mode, t_env *env)
         there_was_export_befor++;
         return NULL;
     }
-    else if (strcmp(str, "export") != 0)
+    else if (there_was_export_befor > 0 && strcmp(str, "export") != 0)
     {
         split_str = ft_split_q(str, '=');
         split_befor = ft_split_q(befor, '=');
@@ -288,6 +288,7 @@ char *check_export_case(char *str, char *befor, int remove_mode, t_env *env)
              char *proccess = selective_remove_quotes(split_str[0], 0, env);
              return proccess;
         }
+        there_was_export_befor = 0;
     }
     
     return NULL;
