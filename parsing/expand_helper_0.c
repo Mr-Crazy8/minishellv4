@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/23 12:04:21 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/23 14:53:33 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,8 +198,10 @@ char *check_export_case(char *str, char *befor, int remove_mode, t_env *env)
     }
     else if (strcmp(str, "export") != 0)
     {
-        split_str = ft_split(str, '=');
-        split_befor = ft_split(befor, '=');
+        // befor = selective_remove_quotes(befor, 1, env);
+        // printf("============== %s\n", befor);
+        split_str = ft_split_q(str, '=');
+        split_befor = ft_split_q(befor, '=');
         
         if (ft_lint(split_str) > 1)
         {
@@ -479,23 +481,34 @@ void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *e
 {
     char *processed;
     
+    // Initialize i to 0
+    (*i) = 0;
+    
+    // Process args array if it exists
     if (current->args)
     {
-        (*i) = 0;
         while (current->args[(*i)])
         {
-            // Try to get a processed string from check_export_case
-            processed = check_export_case(current->args[(*i)], 
-                                         current->args_befor_quotes_remover[(*i)], 
-                                         remove_mode, env);
-                                         
-            // If check_export_case didn't handle it, use selective_remove_quotes
+            // Initialize processed to NULL
+            processed = NULL;
+            
+            // Only try check_export_case if args_befor_quotes_remover exists and has a valid entry at index i
+            if (current->args_befor_quotes_remover && 
+                (*i) < ft_lint(current->args_befor_quotes_remover) && // Add a size check
+                current->args_befor_quotes_remover[(*i)] != NULL)
+            {
+                processed = check_export_case(current->args[(*i)], 
+                                             current->args_befor_quotes_remover[(*i)], 
+                                             remove_mode, env);
+            }
+            
+            // If processed is still NULL, use selective_remove_quotes
             if (processed == NULL)
             {
                 processed = selective_remove_quotes(current->args[(*i)], remove_mode, env);
             }
             
-            // Replace the original string with the processed one
+            // Replace the original string with the processed one if we got a valid result
             if (processed)
             {
                 free(current->args[(*i)]);
@@ -506,18 +519,28 @@ void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *e
         }
     }
     
+    // Process cmd if it exists
     if (current->cmd)
     {
-        // Try to get a processed string from check_export_case
+        // Initialize processed to NULL
+        processed = NULL;
+        
+        // Only try check_export_case if args_befor_quotes_remover exists and has a valid first element
+        if (current->args_befor_quotes_remover && 
+            current->args_befor_quotes_remover[0] != NULL)
+        {
             processed = check_export_case(current->cmd, 
                                          current->args_befor_quotes_remover[0], 
                                          remove_mode, env);
-                                         
-            // If check_export_case didn't handle it, use selective_remove_quotes
-            if (processed == NULL)
-            {
-                processed = selective_remove_quotes(current->cmd, remove_mode, env);
-            }
+        }
+        
+        // If processed is still NULL, use selective_remove_quotes
+        if (processed == NULL)
+        {
+            processed = selective_remove_quotes(current->cmd, remove_mode, env);
+        }
+        
+        // Replace the original string with the processed one if we got a valid result
         if (processed)
         {
             free(current->cmd);

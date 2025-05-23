@@ -205,6 +205,8 @@ int pls_conter(char *str)
 {
     int i = 0;
     int pls_count = 0;
+
+    
     while (str[i])
     {
         if (str[i] == '+')
@@ -319,7 +321,6 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
                 exit(1);
             }
         }
-
         redir = current->redirs;
         while (redir)
         {

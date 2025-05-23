@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/23 09:36:30 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/23 15:10:33 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,7 +216,7 @@ int main(int argc, char *argv[], char *env[])
 			expand_handle(cmd, env_struct,exit_status);
 			// ft_excute(cmd);
 			ambiguous_finder(cmd);
-			process_quotes_for_cmd(cmd, env_struct, 1);
+			// process_quotes_for_cmd(cmd, env_struct, 1);
 			file_opener(cmd);
 			print_ambiguous_redir_errors(cmd);
 			//puts("hshsh");
