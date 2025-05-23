@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/22 21:25:27 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/23 09:24:18 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,6 @@ char *selective_remove_quotes(char *str, int remove_mode, t_env  *env)
     while (str[i])
     {
         in_opposite_quote = 0;
-        
-        // if (is_valid_key(str))
-        // {
-        //     new_str[j++] = str[i++];
-        //     continue;
-        // }
         if ((str[i] == '\'' && quote_state == 2) || 
             (str[i] == '\"' && quote_state == 1))
         {
@@ -104,45 +98,7 @@ char *selective_remove_quotes(char *str, int remove_mode, t_env  *env)
     }
     return (new_str[j] = '\0', new_str);
 }
-// char *check_export_case(char *str, char *befor, int remove_mode, t_env  *env)
-// {
-//     static int there_was_export_befor = 0;
-//     char **split_str;
-//     char **split_befor;
-    
-//     if (strcmp(str, "export") == 0)
-//         there_was_export_befor++;
-//     else if (strcmp(str, "export") != 0)
-//     {
-//         split_str = ft_split(str, '=');
-//         split_befor = ft_split(befor, '=');
-//         // free(split_str[0]);
-//         if (split_befor && split_str[0] && split_str[0][0] != '$' && split_befor[0][0] != '$')
-//             remove_mode = 1;
-//         else
-//             remove_mode = 0;
-//         split_str[0] =  selective_remove_quotes(split_str[0], remove_mode,  env);
-//         // free(split_str[1]);
-//         if (split_befor && split_str[1] && split_str[1][0] != '$' && split_befor[1][0] != '$')
-//             remove_mode = 1;
-//         else
-//             remove_mode = 0;
-//         split_str[1] =  selective_remove_quotes(split_str[1], remove_mode,  env);
-//         if (strchr(str, '=') != NULL)
-//         {
-//             str = ft_strjoin(split_str[0], "=");
-//         str = ft_strjoin(str, split_str[1]);
-            
-//         }
-//         return str;
-//         printf("str===================== %s\n", str);
-//           printf("split_str[0] ////// split_befor[0] ========= %s    ///// %s\n", split_str[0], split_befor[0]);
-//         printf("split_str[1] /// split_befor[1] ========= %s ///// %s\n", split_str[1], split_befor[1]);
-        
 
-//     }
-//     return NULL;
-// }
 
 char *check_export_case(char *str, char *befor, int remove_mode, t_env *env)
 {
@@ -239,61 +195,89 @@ char *check_export_case(char *str, char *befor, int remove_mode, t_env *env)
     return NULL;
 }
 
-// void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env  *env)
+// void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *env)
 // {
 //     char *processed;
-//     char *exp;
+    
 //     if (current->args)
+//     {
+//         (*i) = 0;
+//         while (current->args[(*i)])
 //         {
-//             (*i) = 0;
-//             while (current->args[(*i)])
+//             // Try to get a processed string from check_export_case
+//             processed = check_export_case(current->args[(*i)], 
+//                                          current->args_befor_quotes_remover[(*i)], 
+//                                          remove_mode, env);
+                                         
+//             // If check_export_case didn't handle it, use selective_remove_quotes
+//             if (processed == NULL)
 //             {
-//                 exp = check_export_case(current->args[(*i)], current->args_befor_quotes_remover[(*i)],  remove_mode, env);
-//                 if (exp != NULL)
-//                     processed = exp;
-//                 else if (exp == NULL)
-//                     processed = selective_remove_quotes(current->args[(*i)], remove_mode,  env);
-//                 if (processed)
-//                 {
-//                     free(current->args[(*i)]);
-//                     current->args[(*i)] = processed;
-//                 }
-//                 (*i)++;
+//                 processed = selective_remove_quotes(current->args[(*i)], remove_mode, env);
 //             }
-//         }
-//         if (current->cmd)
-//         {
-//             (*i) = 0;
-//             processed = selective_remove_quotes(current->cmd, remove_mode, env);
+            
+//             // Replace the original string with the processed one
 //             if (processed)
-//                 {
-//                     free(current->cmd);
-//                     current->cmd = processed;
-//                 }
+//             {
+//                 free(current->args[(*i)]);
+//                 current->args[(*i)] = processed;
+//             }
+            
+//             (*i)++;
 //         }
+//     }
+    
+//     if (current->cmd)
+//     {
+//         // Try to get a processed string from check_export_case
+//             processed = check_export_case(current->cmd, 
+//                                          current->args_befor_quotes_remover[0], 
+//                                          remove_mode, env);
+                                         
+//             // If check_export_case didn't handle it, use selective_remove_quotes
+//             if (processed == NULL)
+//             {
+//                 processed = selective_remove_quotes(current->cmd, remove_mode, env);
+//             }
+//         if (processed)
+//         {
+//             free(current->cmd);
+//             current->cmd = processed;
+//         }
+//     }
 // }
 
 void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *env)
 {
     char *processed;
     
+    // Initialize i to 0
+    (*i) = 0;
+    
+    // Process args array if it exists
     if (current->args)
     {
-        (*i) = 0;
         while (current->args[(*i)])
         {
-            // Try to get a processed string from check_export_case
-            processed = check_export_case(current->args[(*i)], 
-                                         current->args_befor_quotes_remover[(*i)], 
-                                         remove_mode, env);
-                                         
-            // If check_export_case didn't handle it, use selective_remove_quotes
+            // Initialize processed to NULL
+            processed = NULL;
+            
+            // Only try check_export_case if args_befor_quotes_remover exists and has a valid entry at index i
+            if (current->args_befor_quotes_remover && 
+                (*i) < ft_lint(current->args_befor_quotes_remover) && // Add a size check
+                current->args_befor_quotes_remover[(*i)] != NULL)
+            {
+                processed = check_export_case(current->args[(*i)], 
+                                             current->args_befor_quotes_remover[(*i)], 
+                                             remove_mode, env);
+            }
+            
+            // If processed is still NULL, use selective_remove_quotes
             if (processed == NULL)
             {
                 processed = selective_remove_quotes(current->args[(*i)], remove_mode, env);
             }
             
-            // Replace the original string with the processed one
+            // Replace the original string with the processed one if we got a valid result
             if (processed)
             {
                 free(current->args[(*i)]);
@@ -304,18 +288,28 @@ void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *e
         }
     }
     
+    // Process cmd if it exists
     if (current->cmd)
     {
-        // Try to get a processed string from check_export_case
+        // Initialize processed to NULL
+        processed = NULL;
+        
+        // Only try check_export_case if args_befor_quotes_remover exists and has a valid first element
+        if (current->args_befor_quotes_remover && 
+            current->args_befor_quotes_remover[0] != NULL)
+        {
             processed = check_export_case(current->cmd, 
                                          current->args_befor_quotes_remover[0], 
                                          remove_mode, env);
-                                         
-            // If check_export_case didn't handle it, use selective_remove_quotes
-            if (processed == NULL)
-            {
-                processed = selective_remove_quotes(current->cmd, remove_mode, env);
-            }
+        }
+        
+        // If processed is still NULL, use selective_remove_quotes
+        if (processed == NULL)
+        {
+            processed = selective_remove_quotes(current->cmd, remove_mode, env);
+        }
+        
+        // Replace the original string with the processed one if we got a valid result
         if (processed)
         {
             free(current->cmd);
