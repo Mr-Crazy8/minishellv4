@@ -98,6 +98,87 @@ int	ft_isdigiti(int c)
 
 
 
+// int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int pipe_out)
+// {
+//     char *var;
+//     var = NULL;
+//     if (expand->original[expand->i] == '$' && expand->quote_state != 1)
+//     {
+//         expand->i++;
+//         if (helper3(expand, exit_status, pipe_out) == 0)
+//         {
+//             expand->start = expand->i;
+//             if (ft_isdigiti(expand->original[expand->i])) 
+//             {
+//                 expand->i++;
+//             } 
+//             else {
+//                 while (expand->original[expand->i] && is_valid_var_char(expand->original[expand->i]))
+//                     expand->i++;
+//             }
+            
+//             size_t var_len = expand->i - expand->start;
+//             if (var_len > SIZE_MAX - 1)
+//             {
+//                 fprintf(stderr, "minishell: memory allocation failed: variable name too long\n");
+//                 return (0);
+//             }
+//             if (var_len == 0) {
+//                 if (!ensure_buffer_space(expand, 1)) {
+//                     return (0);
+//                 }
+//                 expand->expanded[expand->j++] = '$';
+//                 return (1);
+//             }
+            
+//             expand->var_name = malloc(var_len + 1);
+//             if (!expand->var_name)
+//             {
+//                 fprintf(stderr, "minishell: memory allocation failed\n");
+//                 exit(1);
+//             }
+//             memcpy(expand->var_name, expand->original + expand->start, var_len);
+//             expand->var_name[var_len] = '\0';
+//             if (is_valid_key(expand->var_name) != 1)
+//                 var = lookup_variable(expand->var_name, env);
+            
+//             // Only set var_value if the variable exists
+//             if (var != NULL)
+//                 expand->var_value = var;
+                
+//             free(expand->var_name);
+//             expand->var_name = NULL;
+//         }
+
+//         if (expand->var_value)
+//         {
+//             size_t len = strlen(expand->var_value);
+//             if (len > SIZE_MAX - expand->j)
+//             {
+//                 fprintf(stderr, "minishell: memory allocation failed: buffer overflow\n");
+//                 free(expand->var_value);
+//                 expand->var_value = NULL;
+//                 return (0);
+//             }
+//             if (!ensure_buffer_space(expand, len))
+//             {
+//                 free(expand->var_value);
+//                 expand->var_value = NULL;
+//                 return (0);
+//             }
+//             memcpy(expand->expanded + expand->j, expand->var_value, len);
+//             expand->j += len;
+//             free(expand->var_value);
+//             expand->var_value = NULL;
+//         }
+//         // We're not outputting anything for non-existent variables
+//         // And we're ensuring they are completely removed
+        
+//         return (1);
+//     }
+//     return (0);
+// }
+
 int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int pipe_out)
 {
     char *var;
@@ -112,6 +193,23 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int
             {
                 expand->i++;
             } 
+            // Handle case where $ is followed by a quote (like $"HOME" or $'HOME')
+            else if (expand->original[expand->i] == '"' || expand->original[expand->i] == '\'') 
+            {
+                // Check if it's exactly one $ followed by a quote (not $$"HOME")
+                if (expand->i > 1 && expand->original[expand->i - 2] == '$') 
+                {
+                    // This is $$"HOME" case, don't remove the $
+                    if (!ensure_buffer_space(expand, 1)) {
+                        return (0);
+                    }
+                    expand->expanded[expand->j++] = '$';
+                    return (1);
+                }
+                // Single $ followed by quote - remove the $ and continue
+                // Don't increment i, let the quote be processed normally
+                return (1);
+            }
             else {
                 while (expand->original[expand->i] && is_valid_var_char(expand->original[expand->i]))
                     expand->i++;
