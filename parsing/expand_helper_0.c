@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/23 14:53:33 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/23 15:34:41 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,6 @@ char *check_export_case(char *str, char *befor, int remove_mode, t_env *env)
     char *result = NULL; // To hold our final result
     char *temp = NULL;   // For temporary strings
     
-    printf("=======........................ %s\n", str);
     if (strcmp(str, "export") == 0)
     {
         there_was_export_befor++;
@@ -198,8 +197,6 @@ char *check_export_case(char *str, char *befor, int remove_mode, t_env *env)
     }
     else if (strcmp(str, "export") != 0)
     {
-        // befor = selective_remove_quotes(befor, 1, env);
-        // printf("============== %s\n", befor);
         split_str = ft_split_q(str, '=');
         split_befor = ft_split_q(befor, '=');
         

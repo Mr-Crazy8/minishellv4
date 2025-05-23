@@ -69,11 +69,17 @@ int ensure_buffer_space(t_exp_helper *expand, size_t additional_needed)
 
 int helper3(t_exp_helper *expand, int exit_status, int pipe_out)
 {
+    static int was_there_a_pipe_befor = 0;
+    if (pipe_out == 1)
+        was_there_a_pipe_befor++;
 	if (expand->original[expand->i] == '?')
 	{
-        // if (pipe_out == 1)
-        //     expand->var_value = ft_itoa(0);
-        // else
+        if (was_there_a_pipe_befor == 1)
+        {
+            was_there_a_pipe_befor = 0;
+            expand->var_value = ft_itoa(0);
+        }
+        else
 		    expand->var_value = ft_itoa(get_or_set(GET, 0));
 		expand->i++;
 		return (1);
