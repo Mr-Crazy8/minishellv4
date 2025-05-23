@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/23 15:34:41 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/23 16:17:05 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,8 +211,6 @@ char *check_export_case(char *str, char *befor, int remove_mode, t_env *env)
                     ft_free_array(split_befor);
                 return NULL;
             }
-                printf("0  ================= %s\n", split_str[0]);
-                printf("1  ================= %s\n", split_str[1]);
             if (split_befor && split_befor[1][0] && (split_befor[1][0] == '\'' || split_befor[1][0] == '\"') && split_befor[1][1] == '$')
                 split_befor[1] = selective_remove_quotes(split_befor[1], remove_mode, env);
             if (((split_befor && split_str[0]) && (split_str[0][0] != '$' && split_befor[0][0] != '$')) || ((strchr(split_str[0], '\"') != NULL) || (strchr(split_str[0], '\'') != NULL)))

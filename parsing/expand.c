@@ -207,6 +207,26 @@ void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status
 }
 
 
+// int pls_conter(char *str)
+// {
+//     int i = 0;
+//     int pls_count = 0;
+
+    
+//     while (str[i])
+//     {
+//         if (str[i] == '+')
+//             pls_count++;
+//         i++;
+//     }
+//     i = 0;
+//     while (str[i] && str[i] != '+')
+//         i++;
+//     if (str[i] == '+' && str[i + 1] == '=' && (pls_count == 0 || pls_count == 1) && strchr(str, '\'') == NULL && strchr(str, '\"') == NULL)
+//         return 1;
+//     return 0;
+// }
+
 int pls_conter(char *str)
 {
     int i = 0;
@@ -222,8 +242,23 @@ int pls_conter(char *str)
     i = 0;
     while (str[i] && str[i] != '+')
         i++;
+    
     if (str[i] == '+' && str[i + 1] == '=' && (pls_count == 0 || pls_count == 1) && strchr(str, '\'') == NULL && strchr(str, '\"') == NULL)
-        return 1;
+    {
+        // Check if the key name before '+' is valid
+        // Key must start with letter or underscore
+        if (i == 0 || (!isalpha(str[0]) && str[0] != '_'))
+            return 0; // Invalid key name
+            
+        // Check each character in the key name
+        for (int j = 1; j < i; j++)
+        {
+            if (!isalnum(str[j]) && str[j] != '_')
+                return 0; // Invalid character in key name
+        }
+        
+        return 1; // Valid += assignment
+    }
     return 0;
 }
 
