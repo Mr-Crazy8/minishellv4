@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/24 09:44:21 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/24 10:53:37 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -462,8 +462,38 @@ char *selective_remove_quotes(char *str, int remove_mode)
     return (new_str[j] = '\0', new_str);
 }
 
+void checK_if_there_a_var_befor_expand(char *str, t_env *env)
+{
+    int i = 0;
+    char *key_name = NULL;
+    char *true_or_not = NULL;
+    int start = 0;
+    while (str && str[i] && str[i] != '$')
+    {
+        i++;
+    }
+    if (str[i] == '$')
+        start = i;
+     while (str && str[i])
+    {
+        i++;
+    }
+    key_name = ft_substr(str, start, i);
+    true_or_not = lookup_variable(key_name, env);
+    if (true_or_not == NULL)
+        printf("is not a var\n");
+    else  if (true_or_not != NULL)
+        printf("is a realy var\n");
+    printf("true_or_not ========> %s\n", true_or_not);
+    printf("key_name ========> %s\n", key_name);
 
-void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode)
+        
+
+    
+    
+}
+
+void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *env)
 {
     char *processed;
     if (current->args)
@@ -471,7 +501,9 @@ void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode)
             (*i) = 0;
             while (current->args[(*i)])
             {
-        
+                checK_if_there_a_var_befor_expand(current->args_befor_quotes_remover[(*i)], env);
+                
+                
                 processed = selective_remove_quotes(current->args[(*i)], remove_mode);
                 if (processed)
                 {
@@ -494,7 +526,7 @@ void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode)
 }
 
 
-void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode)
+void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode, t_env *env)
 {
     t_cmd *current;
     char *processed;
@@ -503,7 +535,7 @@ void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode)
     current = cmd_list;
     while (current)
     {
-        process_quotes_for_cmd_hp(current, &i, remove_mode);
+        process_quotes_for_cmd_hp(current, &i, remove_mode, env);
         t_redir *redir = current->redirs;
         while (redir)
         {

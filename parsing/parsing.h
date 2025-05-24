@@ -113,11 +113,13 @@ char *allocate_and_init(char *str, int *i, int *j, int *quote_state);
 // char *selective_remove_quotes(char *str, int remove_mode);
 char *selective_remove_quotes(char *str, int remove_mode);
 void free_split_array(char **split);
+void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode, t_env *env);
+void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *env);
 // void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode);
 // void process_quotes_for_cmd_hp(t_cmd *current, t_env *env, int *i, int remove_mode);
 // void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode);
-void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode);
-void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode);
+// void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode);
+// void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode);
 // void process_quotes_for_cmd(t_cmd *cmd_list, t_env *env, int remove_mode);
 
 
