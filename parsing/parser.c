@@ -100,7 +100,24 @@ void  cmd_extracter_hp_1(char *str, int *quote_state, int *i, int *result_len, c
             }
         }
 }
-
+void cmd_extracter_hp_2(char *str, int *i, char *result, int *result_len, int quote_state)
+{
+    if (str[(*i)] == ' ')
+    {
+        result[(*result_len)++] = ' ';
+        (*i)++;
+        
+        // Only collapse multiple spaces if we're NOT inside quotes
+        if (quote_state == 0)
+        {
+            while (str[(*i)] && str[(*i)] == ' ')
+                (*i)++;
+        }
+        // If inside quotes (quote_state != 0), preserve all spaces - don't skip any
+    }
+    else
+        result[(*result_len)++] = str[(*i)++];
+}
 
 // void cmd_extracter_hp_2(char *str, int *i, char *result, int *result_len)
 // {
@@ -115,25 +132,6 @@ void  cmd_extracter_hp_1(char *str, int *quote_state, int *i, int *result_len, c
 //             result[(*result_len)++] = str[(*i)++];
 
 // }
-
-void cmd_extracter_hp_2(char *str, int *i, char *result, int *result_len, int quote_state)
-{
-    if (str[(*i)] == ' ')
-    {
-        result[(*result_len)++] = ' ';
-        (*i)++;
-        
-        // Only collapse spaces if we're NOT inside quotes
-        if (quote_state == 0)
-        {
-            while (str[(*i)] && str[(*i)] == ' ')
-                (*i)++;
-        }
-        // If inside quotes, preserve all spaces - don't skip any
-    }
-    else
-        result[(*result_len)++] = str[(*i)++];
-}
 
 // char *cmd_extracter_hp_3(char *result, int *result_len)
 // {
@@ -170,7 +168,7 @@ char *cmd_extracter_hp_3(char *result, int *result_len, int had_quotes)
         return (final);
     }
     
-    // Original trimming logic for unquoted strings
+    // Original trimming logic for unquoted strings only
     trimmed = result;
     while (*trimmed == ' ')
         trimmed++;
@@ -226,6 +224,7 @@ char *init_cmd_buffer(char *str, int *i, int *result_len, int *quote_state)
 //     return (cmd_extracter_hp_3(result, &result_len));
 // }
 
+
 char *cmd_extracter(char *str)
 {
     char *result;
@@ -241,7 +240,7 @@ char *cmd_extracter(char *str)
     {
         cmd_extracter_hp_0(str[i], &quote_state);
         
-        // Track if we ever had quotes
+        // Track if we ever had quotes during processing
         if (quote_state != 0)
             had_quotes = 1;
             
@@ -253,6 +252,7 @@ char *cmd_extracter(char *str)
     
     return (cmd_extracter_hp_3(result, &result_len, had_quotes));  // Pass had_quotes
 }
+
 
 t_redir *creat_redir_node(int type, char *file)
 {

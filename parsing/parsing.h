@@ -111,13 +111,13 @@ void print_ambiguous_redir_errors(t_cmd *cmd);
 int process_quote_char(char c, int *quote_state, char *new_str, int *j, int remove_mode);
 char *allocate_and_init(char *str, int *i, int *j, int *quote_state);
 // char *selective_remove_quotes(char *str, int remove_mode);
-char *selective_remove_quotes(char *str, int remove_mode, t_env  *env);
+char *selective_remove_quotes(char *str, int remove_mode);
 void free_split_array(char **split);
 // void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode);
 // void process_quotes_for_cmd_hp(t_cmd *current, t_env *env, int *i, int remove_mode);
 // void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode);
-void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env  *env);
-void process_quotes_for_cmd(t_cmd *cmd_list, t_env  *env, int remove_mode);
+void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode);
+void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode);
 // void process_quotes_for_cmd(t_cmd *cmd_list, t_env *env, int remove_mode);
 
 
@@ -206,8 +206,8 @@ void  cmd_extracter_hp_0(char str, int *quote_state);
 void  cmd_extracter_hp_1(char *str, int *quote_state, int *i, int *result_len, char *result);
 // void cmd_extracter_hp_2(char *str, int *i, char *result, int *result_len);
 void cmd_extracter_hp_2(char *str, int *i, char *result, int *result_len, int quote_state);
-// char *cmd_extracter_hp_3(char *result, int *result_len);
 char *cmd_extracter_hp_3(char *result, int *result_len, int had_quotes);
+// char *cmd_extracter_hp_3(char *result, int *result_len);
 char *init_cmd_buffer(char *str, int *i, int *result_len, int *quote_state);
 char *cmd_extracter(char *str);
 t_redir *creat_redir_node(int type, char *file);
