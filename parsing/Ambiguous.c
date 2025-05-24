@@ -7,13 +7,27 @@ int check_for_space(char *str)
 {
     int i = 0;
 
-    while (str && str[i] && str[i] != ' ')
+    while (str && str[i] && str[i] != ' ') 
         i++;
 
     if (i > 0)
         return 1; 
     return 0;
 
+}
+char *trim_space(char *str)
+{
+    int i = 0;
+
+    while (str && str[i] && str[i] == ' ')
+        i++;
+    int start = i;
+    while (str && str[i] && str[i] != ' ')
+        i++;
+    int end = i;
+    char *trim_str = ft_substr(str, start, end - start);
+
+    return trim_str;
 }
 
 void ambiguous_checker(t_redir *redir)
@@ -34,6 +48,8 @@ void ambiguous_checker(t_redir *redir)
             tmp->Ambiguous = 1;
         else if (tmp->file && check_for_space(tmp->file) == 1) 
             tmp->Ambiguous = 1;
+        else
+            tmp->file = ft_strtrim(tmp->file, " ");
         tmp = tmp->next;
     }
 }

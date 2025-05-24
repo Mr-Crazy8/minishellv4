@@ -179,6 +179,50 @@ int	ft_isdigiti(int c)
 //     return (0);
 // }
 
+static int	is_in_set(char c, const char *set)
+{
+	int	i;
+
+	i = 0;
+	while (set[i] != '\0')
+	{
+		if (set[i] == c)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*ft_strtrim(char const *s1, char const *set)
+{
+	size_t	i2;
+	size_t	i1;
+	size_t	r;
+	size_t	len;
+	char	*strtrim;
+
+	if (s1 == NULL)
+		return (NULL);
+	if (set == NULL)
+		return (ft_strdup(s1));
+	i1 = 0;
+	i2 = ft_strlen(s1);
+	r = 0;
+	while (s1[i1] != '\0' && is_in_set(s1[i1], set))
+		i1++;
+	while (i2 > i1 && is_in_set(s1[i2 - 1], set))
+		i2--;
+	len = i2 - i1;
+	strtrim = (char *)malloc((len + 1) * sizeof(char));
+	if (strtrim == NULL)
+		return (NULL);
+	while (i1 < i2)
+		strtrim[r++] = s1[i1++];
+	strtrim[r] = '\0';
+	return (strtrim);
+}
+
+
 
 char *chenger(char *str)
 {
@@ -192,7 +236,6 @@ char *chenger(char *str)
             str[i] = 11;
         i++;
     }
-
     return (str);
 
 }
@@ -258,6 +301,7 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int
             expand->var_name[var_len] = '\0';
             if (is_valid_key(expand->var_name) != 1)
                 var = chenger(lookup_variable(expand->var_name, env));
+                // var = ft_strtrim(chenger(lookup_variable(expand->var_name, env)), " ");
 
             
             // Only set var_value if the variable exists

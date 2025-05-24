@@ -107,7 +107,7 @@ void	print_env(t_env *env_struct);
 void print_cmd(t_cmd *cmd_list);
 void print_ambiguous_redir_errors(t_cmd *cmd);
 
-
+char	*ft_strtrim(char const *s1, char const *set);
 int process_quote_char(char c, int *quote_state, char *new_str, int *j, int remove_mode);
 char *allocate_and_init(char *str, int *i, int *j, int *quote_state);
 // char *selective_remove_quotes(char *str, int remove_mode);
