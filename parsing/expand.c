@@ -179,6 +179,23 @@ int	ft_isdigiti(int c)
 //     return (0);
 // }
 
+
+char *chenger(char *str)
+{
+    int i = 0;
+
+    while (str && str[i])
+    {
+        if (str[i] == '\'')
+            str[i] = 10;
+        else if (str[i] == '\"')
+            str[i] = 11;
+        i++;
+    }
+
+    return (str);
+
+}
 int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int pipe_out)
 {
     char *var;
@@ -240,7 +257,8 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int
             memcpy(expand->var_name, expand->original + expand->start, var_len);
             expand->var_name[var_len] = '\0';
             if (is_valid_key(expand->var_name) != 1)
-                var = lookup_variable(expand->var_name, env);
+                var = chenger(lookup_variable(expand->var_name, env));
+
             
             // Only set var_value if the variable exists
             if (var != NULL)

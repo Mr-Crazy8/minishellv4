@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/24 10:53:37 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/24 12:44:28 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -393,6 +393,260 @@
 
 //================================================================
 
+// int process_quote_char(char c, int *quote_state, char *new_str, int *j, int remove_mode)
+// {
+//     if (c == '\'')
+//     {
+//         if (*quote_state == 0)
+//             *quote_state = 1;
+//         else if (*quote_state == 1)
+//             *quote_state = 0;
+//         if (remove_mode == 0)
+//             new_str[(*j)++] = c;
+//         return (1);
+//     }
+//     else if (c == '\"')
+//     {
+//         if (*quote_state == 0)
+//             *quote_state = 2;
+//         else if (*quote_state == 2)
+//             *quote_state = 0;
+//         if (remove_mode == 0)
+//             new_str[(*j)++] = c;
+//         return (1);
+//     }
+//     return (0);
+// }
+
+// char *allocate_and_init(char *str, int *i, int *j, int *quote_state)
+// {
+//     char *new_str;
+    
+//     (*i) = 0;
+//     (*j) = 0;
+//     (*quote_state) = 0;
+    
+//     if (!str)
+//         return (NULL);
+//     new_str = malloc(strlen(str) + 1);
+//     if (!new_str)
+//         return (NULL);
+//     return new_str;
+// }
+
+// char *selective_remove_quotes(char *str, int remove_mode)
+// {
+//     char *new_str;
+//     int i;
+//     int j;
+//     int quote_state;
+//     int in_opposite_quote;
+    
+//    new_str = allocate_and_init(str, &i, &j, &quote_state);
+//     if (!new_str)
+//         return (NULL);
+//     while (str[i])
+//     {
+//         in_opposite_quote = 0;
+//         if ((str[i] == '\'' && quote_state == 2) || 
+//             (str[i] == '\"' && quote_state == 1))
+//         {
+//             new_str[j++] = str[i++];
+//             in_opposite_quote = 1;
+//         }
+//         else if (!in_opposite_quote && !process_quote_char(str[i], &quote_state, new_str, &j, remove_mode))
+//             new_str[j++] = str[i++];
+//         else
+//             i++;
+//     }
+//     return (new_str[j] = '\0', new_str);
+// }
+
+
+
+// int checK_if_there_a_var_befor_expand(char *str, t_env *env)
+// {
+//     int i = 0;
+//     char *key_name = NULL;
+//     char *var_value = NULL;
+//     int start = 0;
+ 
+//     while (str && str[i] && str[i] != '$')
+//         i++;
+    
+//     if (str && str[i] == '$')
+//     {
+//         start = i + 1;
+//         i++; 
+        
+//         // Collect the variable name
+//         while (str[i] && (isalnum(str[i]) || str[i] == '_'))
+//             i++;
+        
+//         // Extract the variable name
+//         if (start < i)
+//         {
+//             key_name = ft_substr(str, start, i - start);
+//             if (key_name)
+//             {
+//                 var_value = lookup_variable(key_name, env);
+//                 free(key_name);
+                
+//                 // If we found a variable with this name
+//                 if (var_value)
+//                     return 1; // It's a variable that exists
+//             }
+//         }
+//     }
+    
+//     return 0; // Not a variable or variable doesn't exist
+// }
+
+
+
+// void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *env)
+// {
+//     char *processed;
+//     if (current->args)
+//         {
+//             (*i) = 0;
+//             while (current->args[(*i)])
+//             {
+//                 checK_if_there_a_var_befor_expand(current->args_befor_quotes_remover[(*i)], env);
+                
+                
+//                 processed = selective_remove_quotes(current->args[(*i)], remove_mode);
+//                 if (processed)
+//                 {
+//                     free(current->args[(*i)]);
+//                     current->args[(*i)] = processed;
+//                 }
+//                 (*i)++;
+//             }
+//         }
+//         if (current->cmd)
+//         {
+//             (*i) = 0;
+//             processed = selective_remove_quotes(current->cmd, remove_mode);
+//             if (processed)
+//                 {
+//                     free(current->cmd);
+//                     current->cmd = processed;
+//                 }
+//         }
+// }
+
+// void var_case_remove_qoutes(char *str, char *str_befor ,int remove_mode)
+// {
+//     // int i = 0;
+    
+//     // if (strchr(str, '=') != NULL)
+//     // {
+        
+//     // }
+
+//     printf("str =========> %s\n", str);
+//     printf("str_befor =========> %s\n", str_befor);
+    
+// }
+
+// void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *env)
+// {
+//     char *processed;
+    
+//     if (current->args)
+//     {
+//         (*i) = 0;
+//         while (current->args[(*i)])
+//         {
+//             // Check if the original argument was a variable reference
+//             int is_var = 0;
+//             if (current->args_befor_quotes_remover && current->args_befor_quotes_remover[(*i)])
+//             {
+//                 is_var = checK_if_there_a_var_befor_expand(current->args_befor_quotes_remover[(*i)], env);
+//             }
+            
+//             // If it was a variable reference, don't remove quotes
+//             if (is_var)
+//             {
+//                 var_case_remove_qoutes(current->args[(*i)], current->args_befor_quotes_remover[(*i)], remove_mode);
+//                 processed = selective_remove_quotes(current->args[(*i)], 0); // Don't remove quotes
+//             }
+//             else
+//             {
+//                 processed = selective_remove_quotes(current->args[(*i)], remove_mode);
+//             }
+            
+//             if (processed)
+//             {
+//                 free(current->args[(*i)]);
+//                 current->args[(*i)] = processed;
+//             }
+//             (*i)++;
+//         }
+//     }
+    
+//     if (current->cmd)
+//     {
+//         (*i) = 0;
+        
+//         // Check if the original command was a variable reference
+//         int is_var = 0;
+//         if (current->args_befor_quotes_remover && current->args_befor_quotes_remover[0])
+//         {
+//             is_var = checK_if_there_a_var_befor_expand(current->args_befor_quotes_remover[0], env);
+//         }
+        
+//         // If it was a variable reference, don't remove quotes
+//         if (is_var)
+//         {
+//             processed = selective_remove_quotes(current->cmd, 0); // Don't remove quotes
+//         }
+//         else
+//         {
+//             processed = selective_remove_quotes(current->cmd, remove_mode);
+//         }
+        
+//         if (processed)
+//         {
+//             free(current->cmd);
+//             current->cmd = processed;
+//         }
+//     }
+// }
+
+
+// void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode, t_env *env)
+// {
+//     t_cmd *current;
+//     char *processed;
+//     int i;
+
+//     current = cmd_list;
+//     while (current)
+//     {
+//         process_quotes_for_cmd_hp(current, &i, remove_mode, env);
+//         t_redir *redir = current->redirs;
+//         while (redir)
+//         {
+//             if (redir->file)
+//             {
+//                 processed = selective_remove_quotes(redir->file, remove_mode);
+//                 if (processed)
+//                 {
+//                     free(redir->file);
+//                     redir->file = processed;
+//                 }
+//             }
+//             redir = redir->next;
+//         }
+//         current = current->next;
+//     }
+// }
+
+
+//=================++++++++++++++++++//////=++++++++
+
 int process_quote_char(char c, int *quote_state, char *new_str, int *j, int remove_mode)
 {
     if (c == '\'')
@@ -462,38 +716,8 @@ char *selective_remove_quotes(char *str, int remove_mode)
     return (new_str[j] = '\0', new_str);
 }
 
-void checK_if_there_a_var_befor_expand(char *str, t_env *env)
-{
-    int i = 0;
-    char *key_name = NULL;
-    char *true_or_not = NULL;
-    int start = 0;
-    while (str && str[i] && str[i] != '$')
-    {
-        i++;
-    }
-    if (str[i] == '$')
-        start = i;
-     while (str && str[i])
-    {
-        i++;
-    }
-    key_name = ft_substr(str, start, i);
-    true_or_not = lookup_variable(key_name, env);
-    if (true_or_not == NULL)
-        printf("is not a var\n");
-    else  if (true_or_not != NULL)
-        printf("is a realy var\n");
-    printf("true_or_not ========> %s\n", true_or_not);
-    printf("key_name ========> %s\n", key_name);
 
-        
-
-    
-    
-}
-
-void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *env)
+void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode)
 {
     char *processed;
     if (current->args)
@@ -501,9 +725,6 @@ void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *e
             (*i) = 0;
             while (current->args[(*i)])
             {
-                checK_if_there_a_var_befor_expand(current->args_befor_quotes_remover[(*i)], env);
-                
-                
                 processed = selective_remove_quotes(current->args[(*i)], remove_mode);
                 if (processed)
                 {
@@ -526,7 +747,7 @@ void process_quotes_for_cmd_hp(t_cmd *current, int *i, int remove_mode, t_env *e
 }
 
 
-void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode, t_env *env)
+void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode)
 {
     t_cmd *current;
     char *processed;
@@ -535,7 +756,7 @@ void process_quotes_for_cmd(t_cmd *cmd_list, int remove_mode, t_env *env)
     current = cmd_list;
     while (current)
     {
-        process_quotes_for_cmd_hp(current, &i, remove_mode, env);
+        process_quotes_for_cmd_hp(current, &i, remove_mode);
         t_redir *redir = current->redirs;
         while (redir)
         {

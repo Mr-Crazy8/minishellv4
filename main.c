@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/24 10:41:08 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/24 13:04:55 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,39 @@ void check_line(t_cmd **command, t_env *env_list, char *env[])
 	close(fd_input);
 	close(fd_output);
 }
+char *chenger_back(char *str)
+{
+    int i = 0;
+
+    while (str && str[i])
+    {
+        if (str[i] == 10)
+            str[i] = '\'';
+        else if (str[i] == 11)
+            str[i] = '\"';
+        i++;
+    }
+    return str;
+}
+
+void change_back_cmd(t_cmd *cmd)
+{
+	t_cmd *tmp;
+	int i = 0;
+	tmp = cmd;
+
+	while (tmp)
+	{
+		i = 0;
+		while (tmp->args[i])
+		{
+			tmp->args[i] = chenger_back(tmp->args[i]);
+			i++;
+		}
+		tmp->cmd = chenger_back(tmp->cmd);
+		tmp = tmp->next;
+	}
+}
 int main(int argc, char *argv[], char *env[])
 {
 
@@ -214,7 +247,8 @@ int main(int argc, char *argv[], char *env[])
 			exit_status = get_or_set(GET, 0);
 			//printf("exit_status first ====================> %d\n", exit_status);
 			expand_handle(cmd, env_struct,exit_status);
-			process_quotes_for_cmd(cmd, 1, env_struct);
+			process_quotes_for_cmd(cmd, 1);
+			change_back_cmd(cmd);
 			// ft_excute(cmd);
 			ambiguous_finder(cmd);
 			file_opener(cmd);
