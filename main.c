@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/24 13:04:55 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/25 10:42:56 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,6 +221,7 @@ int main(int argc, char *argv[], char *env[])
 	{
 		input = readline("minishell $> ");
 		// input = strdup("\"'\"$USER\"'\"");
+		// input = ft_strdup("export \"\"v=$a \"g=$a\" ");
 		// cmd = NULL;
 		if (!input)
 			break;
@@ -243,7 +244,6 @@ int main(int argc, char *argv[], char *env[])
 			// expand_handle(token_list, env_struct, exit_status);
 			//process_quotes_for_tokens(token_list, 1);
 			cmd = parser(token_list);
-			
 			exit_status = get_or_set(GET, 0);
 			//printf("exit_status first ====================> %d\n", exit_status);
 			expand_handle(cmd, env_struct,exit_status);
@@ -254,7 +254,7 @@ int main(int argc, char *argv[], char *env[])
 			file_opener(cmd);
 			print_ambiguous_redir_errors(cmd);
 			//puts("hshsh");
-			print_cmd(cmd);
+			//print_cmd(cmd);
 			check_line(&cmd, env_struct, env);
 			exit_status = cmd->data.exit_status;
 			//printf("exit_status number two  ====================> %d\n", cmd->data.exit_status);

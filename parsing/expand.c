@@ -450,8 +450,8 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
         {
            if (pls_conter(current->args[i]) == 1)
                 pls_case = 1;
-          if ((current->args[i][0] == '\'' && current->args[i][strlen(current->args[i]) - 1] == '\'') ||
-            (current->args[i][0] == '"' && current->args[i][strlen(current->args[i]) - 1] == '"'))
+          if (((current->args[i][0] == '\'' && current->args[i][strlen(current->args[i]) - 1] == '\'') ||
+            (current->args[i][0] == '"' && current->args[i][strlen(current->args[i]) - 1] == '"')) && current->args[i + 1] != NULL)
                 should_split = 0;
         else
         {
@@ -537,7 +537,6 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
     }
     if (pls_case == 1 && should_split == 1) 
         should_split = 0;
-
-    if (should_split || had_empty_var)
+    if (should_split | had_empty_var)
         apply_word_splitting(cmd_list, expand);
 }

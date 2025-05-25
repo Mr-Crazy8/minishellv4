@@ -101,7 +101,6 @@ int check_var_quotes(char *orig_arg, char *orig_equals)
             return 1;  // Variable name has quotes or $ - split
         j++;
     }
-    
     // Check if variable name starts with a digit or invalid character
     if (((isdigit(orig_arg[0]) || (!isalpha(orig_arg[0]) && orig_arg[0] != '_'))))
         return 1;
@@ -315,7 +314,6 @@ void split_the_rest(t_cmd *current, int should_split, int had_removed_var)
 
     if (!current->args)
         return;
-    
     // If it's not export command, use the global should_split flag
     if (!current->cmd || strcmp(current->cmd, "export") != 0) 
     {
@@ -329,7 +327,8 @@ void split_the_rest(t_cmd *current, int should_split, int had_removed_var)
         return;
     }
     i = 1;  // Skip the 'export' command itself (args[0])
-    while (current->args && current->args[i]) {
+    while (current->args && current->args[i]) 
+    {
         equals = strchr(current->args[i], '=');
         
         // For the case of "export $a" where $a has been expanded to a value
