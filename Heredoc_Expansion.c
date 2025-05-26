@@ -217,10 +217,10 @@ int heredoc_opener(void)
         if (random_name) 
         {
             printf("%s\n", random_name);
-            free(random_name);  
         }
 
     int fd = open(random_name, O_CREAT | O_RDWR, 0644);
+            free(random_name);  
     
     return fd;
 }
@@ -424,15 +424,20 @@ void	ft_putchar_fd(char c, int fd)
 
 int write_to_file(char *str)
 {
-
+    if (!str)
+        return -1;
+        
     int i = 0;
     int fd = heredoc_opener();
-    while (str[i])
+    if (fd < 0)
+        return -1;
+        
+    while (str && str[i])
     {
         ft_putchar_fd(str[i], fd);
         i++;
     }
-    
+    free(str);
     return fd;
 }
 
@@ -442,7 +447,7 @@ int heredoc(char *delmeter, t_env *env, int exit_status, char *orig_delimiter)
     char *heredoc;
     char *tmp1;
     char *tmp2;
-    char *processed_delimiter = heredoc_delemter(delmeter);
+    char *processed_delimiter = delmeter;
 
     heredoc = NULL;
 
@@ -487,6 +492,7 @@ int heredoc(char *delmeter, t_env *env, int exit_status, char *orig_delimiter)
             heredoc = tmp2;
         }
     }
+   
     free(processed_delimiter);
     return write_to_file(heredoc);
 }

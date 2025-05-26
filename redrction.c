@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:59:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/22 17:01:02 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/26 16:38:18 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ void ft_redircte(t_redir *rederction)
             dup2(fd, 1);
             close (fd);
         }
+        else if (tmp->type == 3)  // Heredoc (<<)
+            dup2(tmp->fd, 0);  
         tmp = tmp->next;
     }
     // if (tmp->type == 0)
