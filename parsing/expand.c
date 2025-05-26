@@ -2,6 +2,13 @@
 #include <ctype.h>
 #define MAX_BUFFER_SIZE (1ULL << 30) // 1GB max buffer size
 
+// char *convert_to_one_space(char *str)
+// {
+    
+// }
+
+
+
 int expand_handle_helper0(t_exp_helper *expand)
 {
 	if (expand->original[expand->i] == '\'')
@@ -86,6 +93,7 @@ int helper3(t_exp_helper *expand, int exit_status, int pipe_out)
 	}
 	return (0);
 }
+
 int	ft_isdigiti(int c)
 {
 	if (c >= '0' && c <= '9')
@@ -98,86 +106,6 @@ int	ft_isdigiti(int c)
 
 
 
-// int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int pipe_out)
-// {
-//     char *var;
-//     var = NULL;
-//     if (expand->original[expand->i] == '$' && expand->quote_state != 1)
-//     {
-//         expand->i++;
-//         if (helper3(expand, exit_status, pipe_out) == 0)
-//         {
-//             expand->start = expand->i;
-//             if (ft_isdigiti(expand->original[expand->i])) 
-//             {
-//                 expand->i++;
-//             } 
-//             else {
-//                 while (expand->original[expand->i] && is_valid_var_char(expand->original[expand->i]))
-//                     expand->i++;
-//             }
-            
-//             size_t var_len = expand->i - expand->start;
-//             if (var_len > SIZE_MAX - 1)
-//             {
-//                 fprintf(stderr, "minishell: memory allocation failed: variable name too long\n");
-//                 return (0);
-//             }
-//             if (var_len == 0) {
-//                 if (!ensure_buffer_space(expand, 1)) {
-//                     return (0);
-//                 }
-//                 expand->expanded[expand->j++] = '$';
-//                 return (1);
-//             }
-            
-//             expand->var_name = malloc(var_len + 1);
-//             if (!expand->var_name)
-//             {
-//                 fprintf(stderr, "minishell: memory allocation failed\n");
-//                 exit(1);
-//             }
-//             memcpy(expand->var_name, expand->original + expand->start, var_len);
-//             expand->var_name[var_len] = '\0';
-//             if (is_valid_key(expand->var_name) != 1)
-//                 var = lookup_variable(expand->var_name, env);
-            
-//             // Only set var_value if the variable exists
-//             if (var != NULL)
-//                 expand->var_value = var;
-                
-//             free(expand->var_name);
-//             expand->var_name = NULL;
-//         }
-
-//         if (expand->var_value)
-//         {
-//             size_t len = strlen(expand->var_value);
-//             if (len > SIZE_MAX - expand->j)
-//             {
-//                 fprintf(stderr, "minishell: memory allocation failed: buffer overflow\n");
-//                 free(expand->var_value);
-//                 expand->var_value = NULL;
-//                 return (0);
-//             }
-//             if (!ensure_buffer_space(expand, len))
-//             {
-//                 free(expand->var_value);
-//                 expand->var_value = NULL;
-//                 return (0);
-//             }
-//             memcpy(expand->expanded + expand->j, expand->var_value, len);
-//             expand->j += len;
-//             free(expand->var_value);
-//             expand->var_value = NULL;
-//         }
-//         // We're not outputting anything for non-existent variables
-//         // And we're ensuring they are completely removed
-        
-//         return (1);
-//     }
-//     return (0);
-// }
 
 static int	is_in_set(char c, const char *set)
 {
@@ -239,6 +167,7 @@ char *chenger(char *str)
     return (str);
 
 }
+
 int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int pipe_out)
 {
     char *var;
@@ -300,8 +229,12 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int
             memcpy(expand->var_name, expand->original + expand->start, var_len);
             expand->var_name[var_len] = '\0';
             if (is_valid_key(expand->var_name) != 1)
-                var = chenger(lookup_variable(expand->var_name, env));
+            {
                 // var = ft_strtrim(chenger(lookup_variable(expand->var_name, env)), " ");
+                var = chenger(lookup_variable(expand->var_name, env));
+                // var = ft_strjoin(" ", var);
+
+            }
 
             
             // Only set var_value if the variable exists
@@ -366,28 +299,9 @@ void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status
 
 	if (expand->expanded)
 		expand->expanded[expand->j] = '\0';
+    expand->expanded = ft_strtrim(expand->expanded, " ");
 }
 
-
-// int pls_conter(char *str)
-// {
-//     int i = 0;
-//     int pls_count = 0;
-
-    
-//     while (str[i])
-//     {
-//         if (str[i] == '+')
-//             pls_count++;
-//         i++;
-//     }
-//     i = 0;
-//     while (str[i] && str[i] != '+')
-//         i++;
-//     if (str[i] == '+' && str[i + 1] == '=' && (pls_count == 0 || pls_count == 1) && strchr(str, '\'') == NULL && strchr(str, '\"') == NULL)
-//         return 1;
-//     return 0;
-// }
 
 int pls_conter(char *str)
 {
@@ -404,7 +318,6 @@ int pls_conter(char *str)
     i = 0;
     while (str[i] && str[i] != '+')
         i++;
-    
     if (str[i] == '+' && str[i + 1] == '=' && (pls_count == 0 || pls_count == 1) && strchr(str, '\'') == NULL && strchr(str, '\"') == NULL)
     {
         if (i == 0 || (!isalpha(str[0]) && str[0] != '_'))
@@ -415,7 +328,6 @@ int pls_conter(char *str)
                 return 0; // Invalid character in key name
             j++;
         }
-        
         return 1; // Valid += assignment
     }
     return 0;

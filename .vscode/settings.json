@@ -4,6 +4,9 @@
         "iterator": "c",
         "ctype.h": "c",
         "sstream": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "locale": "c",
+        "history.h": "c",
+        "readline.h": "c"
     }
 }

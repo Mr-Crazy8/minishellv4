@@ -1,6 +1,6 @@
 #include "parsing.h" ///5 func
 
-static char *process_redir(char *str, int *pos) // 32
+static char *process_redir(char *str, int *pos)
 {
     int start;
     int i;

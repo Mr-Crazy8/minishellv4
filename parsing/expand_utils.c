@@ -5,18 +5,17 @@
 
 int is_valid_var_name(char *str, int len)
 {
+    int i = 1;
     if (!str || len <= 0)
         return 0;
     if ((!isalpha(str[0]) && str[0] != '_'))
         return 0;
-
-
-    
-    for (int i = 1; i < len; i++) {
+    while (i < len)
+    {
         if (!is_valid_var_char(str[i]))
             return 0;
+        i++;
     }
-    
     return 1;
 }
 
@@ -37,26 +36,70 @@ int should_split_arg(char *arg, char *original_arg)
     if (!is_valid_var_name(arg, equals - arg))
         return 1;
     
-    if (original_arg) {
+    if (original_arg) 
+    {
         orig_equals = strchr(original_arg, '=');
         if (orig_equals && check_var_quotes(original_arg, orig_equals))
             return 1;
     }
-    
-    return 0;  // Default: don't split
+    return 0; 
 }
 
 
+// char **split_if_needed(char *str)
+// {
+//     int i = 0;
+//     int count;
+//     char **result;
+//     char *trimmed_str;
+
+//     i = 0;
+//     if (!str || !*str || (!strchr(str, ' ') && !strchr(str, '\t') && !strchr(str, '\n')))
+//         return NULL;
+//     result = ft_split_q(str, ' ');
+//     count = 0;
+//     if (result) 
+//     {
+//         while (result[count])
+//             count++;
+//     }
+    
+//     if (count <= 1) 
+//     {
+//         free_string_array(result);
+//         return NULL;
+//     }
+    
+//     return result;
+// }
+
+// In expand_utils.c, modify split_if_needed function to better handle leading spaces:
 char **split_if_needed(char *str)
 {
     int i = 0;
     int count;
     char **result;
+    char *trimmed_str;
 
-    i = 0;
-    if (!str || !*str || (!strchr(str, ' ') && !strchr(str, '\t') && !strchr(str, '\n')))
+    if (!str || !*str)
         return NULL;
-    result = ft_split_q(str, ' ');
+    // printf("=========\n");
+    // printf("str ======= [%s]\n",  str);
+    // Trim leading and trailing spaces for standalone variables
+    trimmed_str = ft_strtrim(str, " ");
+    if (!trimmed_str)
+        return NULL;
+    //  printf("trimmed_str ======= [%s]\n",  str);
+    // Check if it still needs splitting after trimming
+    if (!strchr(trimmed_str, ' ') && !strchr(trimmed_str, '\t') && !strchr(trimmed_str, '\n'))
+    {
+        free(trimmed_str);
+        return NULL;
+    }
+    
+    result = ft_split_q(trimmed_str, ' ');
+    free(trimmed_str);
+    
     count = 0;
     if (result) 
     {
@@ -77,9 +120,7 @@ void free_string_array(char **array)
 {
     if (!array)
         return;
-
     int i = 0;
-
     while (array[i])
         {
             free(array[i]);
@@ -223,22 +264,15 @@ void split_the_rest_helper(char *equals, int should_split, t_cmd *current, int *
 
     if (current->args[(*i)] && equals)
     {
-    //    if  (pls_conter(current->args[(*i)]) > 1)
-    //         force_split = 1;
-        // If variable name starts with a number, force split
         if (isdigit(current->args[(*i)][0]))
             force_split = 1;
-            
-        // If variable name contains quotes, force split
-        // SAFE ACCESS CHECK - Make sure array and index are valid before accessing
-        if (current->args_befor_quotes_remover) {
-            // Count elements to make sure we don't go beyond the end
+        if (current->args_befor_quotes_remover) 
+        {
             int count = 0;
             while (current->args_befor_quotes_remover[count])
                 count++;
-                
-            // Only access if index is valid
-            if (*i < count && current->args_befor_quotes_remover[*i]) {
+            if (*i < count && current->args_befor_quotes_remover[*i]) 
+            {
                 char *orig_equals = strchr(current->args_befor_quotes_remover[*i], '=');
                 if (orig_equals && check_var_quotes(current->args_befor_quotes_remover[*i], orig_equals))
                     force_split = 1;
@@ -270,41 +304,7 @@ void split_the_rest_helper(char *equals, int should_split, t_cmd *current, int *
     }
 }
 
-// void split_the_rest(t_cmd *current, int should_split)
-// {
-//     int i;
-//     char *equals;
-//     int arg_should_split;
 
-//     if (!current->args)
-//         return;
-    
-//     if (!current->cmd || strcmp(current->cmd, "export") != 0) {
-//         i = 0;
-//         while (current->args && current->args[i]) {
-//             equals = strchr(current->args[i], '=');
-//             split_the_rest_helper(equals, should_split, current, &i);
-//             i++;
-//         }
-//         return;
-//     }
-    
-//     i = 1; 
-//     while (current->args && current->args[i]) {
-//         equals = strchr(current->args[i], '=');
-//         if (current->args_befor_quotes_remover && i < ft_lint(current->args_befor_quotes_remover)) {
-//             arg_should_split = should_split_arg(
-//                 current->args[i], 
-//                 current->args_befor_quotes_remover[i]
-//             );
-//         } else {
-//             arg_should_split = should_split_arg(current->args[i], NULL);
-//         }
-        
-//         split_the_rest_helper(equals, arg_should_split, current, &i);
-//         i++;
-//     }
-// }
 
 void split_the_rest(t_cmd *current, int should_split, int had_removed_var)
 {
@@ -314,7 +314,6 @@ void split_the_rest(t_cmd *current, int should_split, int had_removed_var)
 
     if (!current->args)
         return;
-    // If it's not export command, use the global should_split flag
     if (!current->cmd || strcmp(current->cmd, "export") != 0) 
     {
         i = 0;
@@ -326,20 +325,16 @@ void split_the_rest(t_cmd *current, int should_split, int had_removed_var)
         }
         return;
     }
-    i = 1;  // Skip the 'export' command itself (args[0])
+    i = 1; 
     while (current->args && current->args[i]) 
     {
         equals = strchr(current->args[i], '=');
-        
-        // For the case of "export $a" where $a has been expanded to a value
-        // We need to make sure it gets split even if it doesn't contain an equals sign
         if (had_removed_var == 1)
             arg_should_split = 1;
         else if (!equals && current->args_befor_quotes_remover && i < ft_lint(current->args_befor_quotes_remover) && 
             current->args_befor_quotes_remover[i] && strchr(current->args_befor_quotes_remover[i], '$')) 
             {
-            // This was originally a variable that got expanded
-            arg_should_split = 1;  // Force splitting for expanded variables
+            arg_should_split = 1; 
         }
         else if (current->args_befor_quotes_remover && i < ft_lint(current->args_befor_quotes_remover)) 
         {
@@ -363,7 +358,6 @@ void cmd_splitting(t_cmd *cmd_list )
      int arg_count;
      char **new_args;
      char **split;
-
      if (current->args && current->args[0] && current->cmd &&
             strcmp(current->args[0], current->cmd) == 0) 
         {

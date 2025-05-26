@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/25 10:42:56 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/26 16:16:39 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,33 @@ void add_one_shlvl(t_env *env)
     }
 }
 
+void check_here_doc(t_cmd *cmd, t_env *env)
+{
+	 /* 0:<, 1:>, 2:>>, 3:<< */
+	t_cmd *tmp;
+	t_redir *tmp_redir;
+	tmp_redir = NULL;
+	tmp = cmd;
+	int fd;
+
+	while (tmp)
+	{
+		tmp_redir = tmp->redirs;
+		while (tmp_redir)
+		{
+			if (tmp_redir->type == 3)
+				{
+					fd = heredoc(tmp_redir->file, env, 0, tmp_redir->orig_token);
+					printf("=========%d\n", fd);
+					tmp_redir->fd = fd;
+				}
+			tmp_redir = tmp_redir->next;
+		}
+		
+		tmp = tmp->next;
+	}
+	
+}
 
 
 void check_line(t_cmd **command, t_env *env_list, char *env[])
@@ -147,6 +174,8 @@ void check_line(t_cmd **command, t_env *env_list, char *env[])
     fd_input = dup(0);
 	fd_output = dup(1);
 	//shlvl(env_list, *command);
+
+	check_here_doc(*command, env_list);
 	if (cmd->pipe_out)
 	{
 		ft_excute_mult_pipe(cmd, env_list, env);
@@ -254,7 +283,7 @@ int main(int argc, char *argv[], char *env[])
 			file_opener(cmd);
 			print_ambiguous_redir_errors(cmd);
 			//puts("hshsh");
-			//print_cmd(cmd);
+			print_cmd(cmd);
 			check_line(&cmd, env_struct, env);
 			exit_status = cmd->data.exit_status;
 			//printf("exit_status number two  ====================> %d\n", cmd->data.exit_status);

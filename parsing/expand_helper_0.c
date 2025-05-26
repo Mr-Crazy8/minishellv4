@@ -6,11 +6,17 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:21:05 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/24 16:32:56 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/25 15:21:26 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
+
+
+
+
+
+
 
 int process_quote_char(char c, int *quote_state, char *new_str, int *j, int remove_mode)
 {
