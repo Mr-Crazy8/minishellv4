@@ -17,10 +17,10 @@
 #include<fcntl.h>
 #include<limits.h>
 
-int heredoc_opener(void);
+int *heredoc_opener(void);
 char *random_file_name(void);
 char *random_dir(void);
-int heredoc(char *delmeter, t_env *env, int exit_status, char *orig_delimiter);
+int *heredoc(char *delmeter, t_env *env, int exit_status, char *orig_delimiter);
 
 // typedef struct t_data
 // {

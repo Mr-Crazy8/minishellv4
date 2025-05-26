@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/26 16:34:55 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:05:21 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void check_here_doc(t_cmd *cmd, t_env *env)
 	t_redir *tmp_redir;
 	tmp_redir = NULL;
 	tmp = cmd;
-	int fd;
+	int *fd;
 
 	while (tmp)
 	{
@@ -152,9 +152,9 @@ void check_here_doc(t_cmd *cmd, t_env *env)
 			if (tmp_redir->type == 3)
 				{
 					fd = heredoc(tmp_redir->file, env, 0, tmp_redir->orig_token);
-					printf("fd =========%d\n", fd);
-					tmp_redir->fd = fd;
-					printf("tmp_redir->fd =========%d\n", tmp_redir->fd);
+					// printf("fd =========%d\n", fd);
+					tmp_redir->fd = fd[1];
+					// printf("tmp_redir->fd =========%d\n", tmp_redir->fd);
 				}
 			tmp_redir = tmp_redir->next;
 		}

@@ -203,10 +203,11 @@ char *random_file_name(void)
     return rstring_final;
 }
 
-int heredoc_opener(void)
+int *heredoc_opener(void)
 {
     // int i;
     char *random_name;
+    int fd_heredoc[2];
     // char *random_dir_path;
     // char *final_name_path;
     // Generate and print 5 random strings
@@ -216,13 +217,16 @@ int heredoc_opener(void)
 
         if (random_name) 
         {
-            printf("%s\n", random_name);
+            // printf("%s\n", random_name);
         }
 
-    int fd = open(random_name, O_CREAT | O_RDWR, 0644);
+     fd_heredoc[0] = open(random_name, O_CREAT | O_WRONLY, 0644);
+         fd_heredoc[1] = open(random_name, O_CREAT | O_RDONLY, 0644);
             free(random_name);  
     
-    return fd;
+
+
+    return fd_heredoc;
 }
 
 
@@ -422,26 +426,28 @@ void	ft_putchar_fd(char c, int fd)
 	write(fd, &c, 1);
 }
 
-int write_to_file(char *str)
+int *write_to_file(char *str)
 {
     if (!str)
-        return -1;
+        return (-1);
         
     int i = 0;
-    int fd = heredoc_opener();
+    int *fd = heredoc_opener();
     if (fd < 0)
         return -1;
         
     while (str && str[i])
     {
-        ft_putchar_fd(str[i], fd);
+        ft_putchar_fd(str[i], fd[0]);
         i++;
     }
+
+    // lseek(fd, 0, SEEK_SET);
     free(str);
     return fd;
 }
 
-int heredoc(char *delmeter, t_env *env, int exit_status, char *orig_delimiter)
+int *heredoc(char *delmeter, t_env *env, int exit_status, char *orig_delimiter)
 {
     char *line;
     char *heredoc;

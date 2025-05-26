@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:59:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/26 16:38:18 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/26 16:53:47 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,17 @@ void ft_redircte(t_redir *rederction)
     // fd_outpot = dup(1);
     while(tmp)
     {
-        if(tmp->type == 0)
+
+        if (tmp->type == 3)
+        {
+          if (tmp->fd >= 0)
+            {
+                dup2(tmp->fd, 0);
+                close(tmp->fd);  // Close after duplication
+                    tmp->fd = -1;    // Mark as closed
+            }
+        }
+        else if(tmp->type == 0)
         {
             fd = open(tmp->file, O_RDONLY);
             if(fd == -1)
@@ -62,6 +72,7 @@ void ft_redircte(t_redir *rederction)
                 close(fd);
                 // execve(tmp->args[i], tmp->args, NULL);
         }
+        
         else if (tmp->type == 1) 
         {
             fd = open(tmp->file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
@@ -88,8 +99,7 @@ void ft_redircte(t_redir *rederction)
             dup2(fd, 1);
             close (fd);
         }
-        else if (tmp->type == 3)  // Heredoc (<<)
-            dup2(tmp->fd, 0);  
+      
         tmp = tmp->next;
     }
     // if (tmp->type == 0)
