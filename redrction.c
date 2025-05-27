@@ -6,39 +6,41 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 17:59:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/26 16:53:47 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/26 18:41:46 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void intialize_struct(t_redir *list)
-{
-    t_redir *tmp = list;
+// void intialize_struct(t_redir *list)
+// {
+//     t_redir *tmp = list;
 
-    tmp->type  = 0;
-    tmp->file = strdup("input.txt");
-}
-void ft_herdoc(t_redir *red, char *delimeter)
-{
-    t_redir *tmp;
+//     tmp->type  = 0;
+//     tmp->file = strdup("input.txt");
+// }
+// void ft_herdoc(t_redir *red, char *delimeter)
+// {
+//     t_redir *tmp;
 
-    tmp = red;
-    delimeter = tmp->file;
-    int fd = open("/tmp/.heredoc_tmp", O_CREAT | O_RDWR | O_TRUNC, 0664);
+//     tmp = red;
+//     delimeter = tmp->file;
+//     int fd = open("/tmp/.heredoc_tmp", O_CREAT | O_RDWR | O_TRUNC, 0664);
 
-    while(1)
-    {
-        char *line = readline("herdoc> ");
-        if(!ft_strcmp(delimeter, line))
-            break ;
-        write (fd, line, ft_strlen(line));
-        write (1, "\n", 1);
-        free(line);
-    }
-    // int infile = open("/tmp/.heredoc_tmp", O_RDONLY);
+//     while(1)
+//     {
+//         char *line = readline("herdoc> ");
+//         if(!ft_strcmp(delimeter, line))
+//             break ;
+//         write (fd, line, ft_strlen(line));
+//         write (1, "\n", 1);
+//         free(line);
+//     }
+//     // int infile = open("/tmp/.heredoc_tmp", O_RDONLY);
 
-}
+// }
+ /* 0:<, 1:>, 2:>>, 3:<< */
+
 void ft_redircte(t_redir *rederction)
 {
     t_redir *tmp;

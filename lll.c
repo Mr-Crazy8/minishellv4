@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 15:22:58 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/22 12:18:19 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/26 18:31:08 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void close_all_pipes(t_cmd *cmd)
     }
 }
 
-void check_close_red(t_cmd *cmd, t_cmd *prev)
+void check_close_red(t_cmd *cmd, t_cmd *prev,  t_env *env)
 {
         if (prev && prev->pipe_out)
         {
@@ -211,7 +211,7 @@ void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
             if (cmd->pipe_out)
                 dup2(cmd->fd_pipe[1], 1);
             if(cmd->redirs != NULL)
-                check_close_red(cmd, prev);
+                check_close_red(cmd, prev, list_env);
 
             close_all_pipes(head);
             execute_single_command(cmd, list_env, env);

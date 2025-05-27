@@ -226,6 +226,7 @@ int get_or_set(int type, int status); // for intialize or get exit status;
 
 //for teste ;
 void intialize_struct(t_redir *list);
+// void ft_redircte(t_redir *rederction);
 void ft_redircte(t_redir *rederction);
 
 void check_line(t_cmd **command, t_env *env, char *en[]);
@@ -239,8 +240,8 @@ char *check_path(t_env **list);
 
 void execute_single_command(t_cmd *cmd, t_env *list_env, char *env[]);
 
-void check_close_red(t_cmd *cmd, t_cmd *prev);
-
+// void check_close_red(t_cmd *cmd, t_cmd *prev);
+void check_close_red(t_cmd *cmd, t_cmd *prev,  t_env *env);
 
 int     is_builtin(char **args);
 void    excute_builting(t_cmd **command, t_env *env_list, char *env[]);

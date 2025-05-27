@@ -74,13 +74,13 @@ char *random_dir(void)
     }
 
     dir[0] = strdup("/mnt/homes/anel-men/");
-    dir[1] = strdup("/mnt/homes/anel-men/Public/");
+    dir[1] = strdup("/mnt/homes/anel-men/Public/");   ///remove
     dir[2] = strdup("/mnt/homes/anel-men/Pictures/");
     dir[3] = strdup("/mnt/homes/anel-men/Library/Application Support/");
     dir[4] = strdup("/tmp/");
     dir[5] = strdup("/var/tmp/");
     dir[6] = strdup("/Users/Shared/");
-    dir[7] = strdup("/dev/");
+    dir[7] = strdup("/dev/");   ///remove
     dir[8] = strdup("/mnt/homes/anel-men/Desktop/");
     dir[9] = strdup("/mnt/homes/anel-men/Documents/");
     dir[10] = strdup("/mnt/homes/anel-men/Downloads/");
@@ -205,27 +205,26 @@ char *random_file_name(void)
 
 int *heredoc_opener(void)
 {
-    // int i;
     char *random_name;
-    int fd_heredoc[2];
-    // char *random_dir_path;
-    // char *final_name_path;
-    // Generate and print 5 random strings
-    random_name = random_file_name();
-    // random_dir_path = random_dir();
-    // final_name_path = ft_strjoin(random_dir_path, random_name);
-
-        if (random_name) 
-        {
-            // printf("%s\n", random_name);
-        }
-
-     fd_heredoc[0] = open(random_name, O_CREAT | O_WRONLY, 0644);
-         fd_heredoc[1] = open(random_name, O_CREAT | O_RDONLY, 0644);
-            free(random_name);  
+    int *fd_heredoc; // Change from array to dynamically allocated memory
     
+    random_name = random_file_name();
+    
+    // Allocate memory for the array
+    fd_heredoc = malloc(2 * sizeof(int));
+    if (!fd_heredoc) {
+        free(random_name);
+        return NULL; // Return NULL on allocation failure
+    }
 
+    // printf("random_name %s\n", random_name);
 
+    if (random_name) {
+        fd_heredoc[0] = open(random_name, O_CREAT | O_WRONLY, 0644);
+        fd_heredoc[1] = open(random_name, O_CREAT | O_RDONLY, 0644);
+        unlink(random_name);
+        free(random_name);  
+    }
     return fd_heredoc;
 }
 
@@ -428,19 +427,25 @@ void	ft_putchar_fd(char c, int fd)
 
 int *write_to_file(char *str)
 {
-    if (!str)
-        return (-1);
+    // if (!str)
+    //     return NULL;
         
     int i = 0;
     int *fd = heredoc_opener();
-    if (fd < 0)
-        return -1;
-        
+    if (fd == NULL) // Check for NULL instead of < 0
+        return NULL; // Changed from -1
+    if (str == NULL)
+        ft_putchar_fd(0, fd[0]);
+    else {
     while (str && str[i])
     {
         ft_putchar_fd(str[i], fd[0]);
         i++;
     }
+
+    }
+
+    // printf("fd[0] %d\n", fd[0]);
 
     // lseek(fd, 0, SEEK_SET);
     free(str);
@@ -466,7 +471,7 @@ int *heredoc(char *delmeter, t_env *env, int exit_status, char *orig_delimiter)
        {
             write(1, "\n", 1);
             free(processed_delimiter);
-            return -1;
+            return NULL;
        }
        if (strcmp(line, processed_delimiter) == 0)
        {
@@ -478,7 +483,7 @@ int *heredoc(char *delmeter, t_env *env, int exit_status, char *orig_delimiter)
        if (!tmp1)
        {
         free(processed_delimiter);
-        return -1;
+        return NULL;
        }
         if (heredoc == NULL)
             {
@@ -493,7 +498,7 @@ int *heredoc(char *delmeter, t_env *env, int exit_status, char *orig_delimiter)
             if (!tmp2)
             {
                 free(processed_delimiter);
-                return -1;
+                return NULL;
             }
             heredoc = tmp2;
         }
