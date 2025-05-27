@@ -32,12 +32,21 @@ void free_cmd_list(t_cmd *cmd_list)
         if (current->cmd)
             free(current->cmd);
         int i = 0;
-        while(current->args[i])
+        while(current->args && current->args[i])
             {
                 free(current->args[i]);
                 i++;
             }
-        free(current->args);
+         if (current->args)
+            free(current->args);
+        i = 0;
+        while(current->args_befor_quotes_remover && current->args_befor_quotes_remover[i])
+        {
+            free(current->args_befor_quotes_remover[i]);
+            i++;
+        }
+        if (current->args_befor_quotes_remover)
+            free(current->args_befor_quotes_remover);
         if (current->redirs)
             free_redirs(current->redirs);
         free(current);

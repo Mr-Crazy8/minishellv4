@@ -61,7 +61,7 @@ char *random_dir(void)
     static int i = 0;
     unsigned int index;
     int j = 0;
-
+   
     /* Allocate memory for random bytes */
     raw_bytes = malloc(sizeof(unsigned char) * 5);
     if (raw_bytes == NULL) {

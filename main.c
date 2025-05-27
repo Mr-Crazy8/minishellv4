@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/26 18:47:01 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/27 11:30:00 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,12 +234,17 @@ void change_back_cmd(t_cmd *cmd)
 		tmp = tmp->next;
 	}
 }
+
+void ff()
+{
+    system("leaks minishell");
+}
 int main(int argc, char *argv[], char *env[])
 {
 
 	// if (isatty(STDERR_FILENO) == 0)
 	// 	return (0);
-	// atexit(ff);
+	atexit(ff);
 	t_token *token_list;
 	t_env *env_struct = NULL;   //// add to the final main
 	int exit_status = 0;

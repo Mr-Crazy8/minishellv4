@@ -156,7 +156,9 @@ char *chenger(char *str)
 {
     int i = 0;
 
-    while (str && str[i])
+    if (!str)
+        return NULL;
+    while (str[i])
     {
         if (str[i] == '\'')
             str[i] = 10;
@@ -298,8 +300,13 @@ void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status
 	}
 
 	if (expand->expanded)
-		expand->expanded[expand->j] = '\0';
-    expand->expanded = ft_strtrim(expand->expanded, " ");
+    {
+	    expand->expanded[expand->j] = '\0';
+        char *trim = ft_strtrim(expand->expanded, " ");
+        free(expand->expanded);
+        expand->expanded = trim;
+    }
+
 }
 
 

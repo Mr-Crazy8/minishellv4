@@ -279,17 +279,25 @@ t_redir *creat_redir_node(int type, char *file)
 t_cmd *creat_cmd_node(char *str,  t_token *tp,  int pipe_out)
 {
     t_cmd *tmp;
+    char *cmd_str;
     tmp = malloc(sizeof(t_cmd));
     if (!tmp)
         return (NULL);
-    tmp->args = ft_split_q(cmd_extracter(str), ' ');
+    cmd_str = cmd_extracter(str);
+    if (!cmd_str) 
+    {
+        free(tmp);
+        return (NULL);
+    }
+    tmp->args = ft_split_q(cmd_str, ' ');
+    tmp->args_befor_quotes_remover = ft_split_q(cmd_str, ' ');
    
+    free(cmd_str);
 
     if (tmp->args && tmp->args[0])
         tmp->cmd = ft_strdup(tmp->args[0]);
     else
         tmp->cmd = NULL;
-    tmp->args_befor_quotes_remover = ft_split_q(cmd_extracter(str), ' ');
     tmp->redirs = creat_redir_list(str);
     tmp->pipe_out = pipe_out;
     tmp->data.exit_status = 0;
