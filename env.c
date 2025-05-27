@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayoakouh <ayoakouh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 11:48:53 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/12 16:02:39 by ayoakouh         ###   ########.fr       */
+/*   Updated: 2025/05/27 12:32:22 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,8 @@ t_env *env_node_maker(char *env[])
     else
         env_node->value = ft_strdup(env[1]);
 	env_node->is_not_active = 0;
-        
     env_node->next = NULL;
     return env_node;
-
 }
 t_env *rmove_value(t_env *env_list)
 {

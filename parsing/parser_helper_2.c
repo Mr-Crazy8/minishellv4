@@ -74,14 +74,24 @@ static int find_redir(char *str, int i)
 static char *join_redir(char *result, char *temp)
 {
     char *redir;
-    
+    char *new_result;
     if (result)
     {
         redir = ft_strjoin(result, " ");
         free(result);
-        result = ft_strjoin(redir, temp);
+        if (!redir)
+        {
+            free(temp);
+            return NULL;
+        }
+        new_result = ft_strjoin(redir, temp);
         free(redir);
         free(temp);
+
+        if(!new_result)
+            return NULL;
+        return new_result;
+        
     }
     else
         result = temp;

@@ -164,6 +164,11 @@ char *cmd_extracter_hp_3(char *result, int *result_len, int had_quotes)
     if (had_quotes)
     {
         final = ft_strdup(result);
+        if (!final)
+        {
+            free(result);
+            return NULL;
+        }
         free(result);
         return (final);
     }
@@ -173,6 +178,11 @@ char *cmd_extracter_hp_3(char *result, int *result_len, int had_quotes)
     while (*trimmed == ' ')
         trimmed++;
     final = ft_strdup(trimmed);
+    if (!final)
+    {
+        free(result);
+        return NULL;
+    }
     len = ft_strlen(final);
     while (len > 0 && final[len-1] == ' ')
         final[--len] = '\0';

@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/27 11:47:41 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/27 12:56:56 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,10 +275,13 @@ int main(int argc, char *argv[], char *env[])
 			continue;
 		}
 		preprocessed_input = preprocess_command(input); 
-        // free(input);  // Free original input
-         if (!preprocessed_input)
+        if (!preprocessed_input)
+		{
+			free(input);	
             continue;
+		}
 		token_list = tokin_list_maker(preprocessed_input);
+		free(preprocessed_input);
 		// if (token_list && (error_pipi(token_list)  || check_syntax_errors(token_list)))
 		if (token_list && !error_pipi(token_list)  && !check_syntax_errors(token_list))
 		{
@@ -303,35 +306,17 @@ int main(int argc, char *argv[], char *env[])
 			//exit_status = get_or_set(GET, 0);
 			free_cmd_list(cmd);
 			//debug_print_cmd(cmd);
-			if (cmd == NULL) {
-				printf("Warning: Command list is empty after parsing!\n");
-			} else {
-				// process_quotes_for_cmd(cmd, 1);
-				// print_cmd(cmd);
-				// if (cmd)
-				// 	free_cmd_list(cmd);
-			}
 		}
 		else
 			exit_status = get_or_set(SET, 258);   
 		
 		free_token_list(token_list);
 		free(input);
+		
 	}
+	printf("Freeing env_struct at %p\n", (void*)env_struct);
 	free_env_struct(env_struct);
 	return 0;
 }
-
-// char *expand_exit_status(int exit_status)
-// {
-// 	return(ft_itoa(exit_status));
-// }
-
-
-
-// if (strchr(str[i], "$?") != NULL)
-// 	{
-// 		char *exit_status = expand_exit_status(int exit_status);
-// 	}
 
 

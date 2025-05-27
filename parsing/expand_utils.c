@@ -396,5 +396,14 @@ void apply_word_splitting(t_cmd *cmd_list, t_exp_helper *expand)
         split_the_rest(current, should_split, expand->had_removed_var);
         current = current->next;
     }
-     free(expand);
+     if (expand) 
+     {
+        if (expand->expanded)
+            free(expand->expanded);
+        if (expand->var_name)
+            free(expand->var_name);
+        if (expand->var_value)
+            free(expand->var_value);
+        free(expand);
+    }
 }
