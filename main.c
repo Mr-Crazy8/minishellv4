@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/27 11:30:00 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/27 11:47:41 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,7 +301,7 @@ int main(int argc, char *argv[], char *env[])
 			exit_status = cmd->data.exit_status;
 			//printf("exit_status number two  ====================> %d\n", cmd->data.exit_status);
 			//exit_status = get_or_set(GET, 0);
-			// free_cmd_list(cmd);
+			free_cmd_list(cmd);
 			//debug_print_cmd(cmd);
 			if (cmd == NULL) {
 				printf("Warning: Command list is empty after parsing!\n");
@@ -316,7 +316,7 @@ int main(int argc, char *argv[], char *env[])
 			exit_status = get_or_set(SET, 258);   
 		
 		free_token_list(token_list);
-		// free(input);
+		free(input);
 	}
 	free_env_struct(env_struct);
 	return 0;
