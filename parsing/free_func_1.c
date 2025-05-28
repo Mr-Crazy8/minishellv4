@@ -18,12 +18,22 @@ void free_redirs(t_redir *redir_list)
         current = next;
     }
 }
+// void free_split_str(char **split_str)
+// {
+//     int j;
+
+//     j = 0;
+//     while (split_str[j])
+//         free(split_str[j++]);
+//     free(split_str);
+// }
 
 
 void free_cmd_list(t_cmd *cmd_list)
 {
     t_cmd *current;
     t_cmd *next;
+    int i;
 
     current = cmd_list;
     while (current)
@@ -31,22 +41,22 @@ void free_cmd_list(t_cmd *cmd_list)
         next = current->next;
         if (current->cmd)
             free(current->cmd);
-        int i = 0;
-        while(current->args && current->args[i])
-            {
-                free(current->args[i]);
-                i++;
-            }
-         if (current->args)
-            free(current->args);
         i = 0;
-        while(current->args_befor_quotes_remover && current->args_befor_quotes_remover[i])
-        {
-            free(current->args_befor_quotes_remover[i]);
-            i++;
-        }
-        if (current->args_befor_quotes_remover)
-            free(current->args_befor_quotes_remover);
+        // while(current->args && current->args[i])
+        // {
+        //         free(current->args[i]);
+        //         i++;
+        // }
+        // free(current->args);
+        free_split_str(current->args);
+        // i = 0;
+        // while(current->args_befor_quotes_remover && current->args_befor_quotes_remover[i])
+        // {
+        //     free(current->args_befor_quotes_remover[i]);
+        //     i++;
+        // }
+        free_split_str(current->args_befor_quotes_remover);
+        // free(current->args_befor_quotes_remover);
         if (current->redirs)
             free_redirs(current->redirs);
         free(current);

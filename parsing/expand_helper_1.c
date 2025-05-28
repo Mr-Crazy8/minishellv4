@@ -31,7 +31,7 @@ int expand_fill_str(t_exp_helper *expand, char *str)
 	if (!expand->expanded)
 	{
 		fprintf(stderr, "minishell: memory allocation failed\n");
-		exit(1);
+		return (0);
 	}
 
 	expand->i = 0;

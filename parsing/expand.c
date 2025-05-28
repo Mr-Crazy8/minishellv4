@@ -303,19 +303,46 @@ void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status
     {
 	    expand->expanded[expand->j] = '\0';
         char *trim = ft_strtrim(expand->expanded, " ");
+        if (!trim)
+        {
+            expand->expanded = NULL;
+            return;
+
+        }
         free(expand->expanded);
         expand->expanded = trim;
     }
 
 }
 
+int pls_conter_helper(char *str, int *pls_count, int *j, int *i)
+{
+
+    if (str[(*i)] == '+' && str[(*i) + 1] == '=' && ((*pls_count) == 0 || (*pls_count) == 1) && strchr(str, '\'') == NULL && strchr(str, '\"') == NULL)
+    {
+        if ((*i) == 0 || (!isalpha(str[0]) && str[0] != '_'))
+            return 0; // Invalid key name
+        while ((*j) < (*i))
+        {
+            if (!isalnum(str[(*j)]) && str[(*j)] != '_')
+                return 0; // Invalid character in key name
+            (*j)++;
+        }
+        return 1; // Valid += assignment
+    }
+    return 0;
+
+}
 
 int pls_conter(char *str)
 {
-    int i = 0;
-    int pls_count = 0;
-    int j = 1;
+    int i;
+    int pls_count;
+    int j;
     
+    i = 0;
+    pls_count = 0;
+    j = 1;
     while (str[i])
     {
         if (str[i] == '+')
@@ -325,20 +352,42 @@ int pls_conter(char *str)
     i = 0;
     while (str[i] && str[i] != '+')
         i++;
-    if (str[i] == '+' && str[i + 1] == '=' && (pls_count == 0 || pls_count == 1) && strchr(str, '\'') == NULL && strchr(str, '\"') == NULL)
-    {
-        if (i == 0 || (!isalpha(str[0]) && str[0] != '_'))
-            return 0; // Invalid key name
-        while (j < i)
-        {
-            if (!isalnum(str[j]) && str[j] != '_')
-                return 0; // Invalid character in key name
-            j++;
-        }
-        return 1; // Valid += assignment
-    }
-    return 0;
+    return(pls_conter_helper(str, &pls_count, &j, &i));
 }
+
+
+// int pls_conter(char *str)
+// {
+//     int i;
+//     int pls_count;
+//     int j;
+    
+//     i = 0;
+//     pls_count = 0;
+//     j = 1;
+//     while (str[i])
+//     {
+//         if (str[i] == '+')
+//             pls_count++;
+//         i++;
+//     }
+//     i = 0;
+//     while (str[i] && str[i] != '+')
+//         i++;
+//     if (str[i] == '+' && str[i + 1] == '=' && (pls_count == 0 || pls_count == 1) && strchr(str, '\'') == NULL && strchr(str, '\"') == NULL)
+//     {
+//         if (i == 0 || (!isalpha(str[0]) && str[0] != '_'))
+//             return 0; // Invalid key name
+//         while (j < i)
+//         {
+//             if (!isalnum(str[j]) && str[j] != '_')
+//                 return 0; // Invalid character in key name
+//             j++;
+//         }
+//         return 1; // Valid += assignment
+//     }
+//     return 0;
+// }
 
 void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
 {
@@ -358,7 +407,10 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
     }
     expand->buffer_size = 0;
     expand->expanded = NULL;
+    expand->var_name = NULL;  // Add this
+    expand->var_value = NULL; // Add this
     expand->had_removed_var = 0;
+
 
     current = cmd_list;
     while (current)
@@ -458,4 +510,17 @@ void expand_handle(t_cmd *cmd_list, t_env *env, int exit_status)
         should_split = 0;
     if (should_split | had_empty_var)
         apply_word_splitting(cmd_list, expand);
+    else
+        {
+            if (expand) 
+                {
+                if (expand->expanded)
+                    free(expand->expanded);
+                if (expand->var_name)
+                    free(expand->var_name);
+                if (expand->var_value)
+                    free(expand->var_value);
+                free(expand);
+            }
+        }
 }

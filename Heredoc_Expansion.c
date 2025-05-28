@@ -510,33 +510,33 @@ int *heredoc(char *delmeter, t_env *env, int exit_status, char *orig_delimiter)
 
 
 //===========================
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <string.h>
+// #include <unistd.h>
+// #include <readline/readline.h>
+// #include <readline/history.h>
 
-// Function to extract delimiter from heredoc syntax
-char *extract_delimiter(char *cmd)
-{
-    // char *delimiter = NULL;/
-    char *start = strstr(cmd, "<<");
+// // Function to extract delimiter from heredoc syntax
+// char *extract_delimiter(char *cmd)
+// {
+//     // char *delimiter = NULL;/
+//     char *start = strstr(cmd, "<<");
     
-    if (!start)
-        return NULL;
+//     if (!start)
+//         return NULL;
     
-    // Skip the << and any spaces
-    start += 2;
-    while (*start && (*start == ' ' || *start == '\t'))
-        start++;
+//     // Skip the << and any spaces
+//     start += 2;
+//     while (*start && (*start == ' ' || *start == '\t'))
+//         start++;
     
-    if (!*start)
-        return NULL;
+//     if (!*start)
+//         return NULL;
     
-    // Create a copy of the whole delimiter
-    return strdup(start);
-}
+//     // Create a copy of the whole delimiter
+//     return strdup(start);
+// }
 
 // int main(int argc, char *argv[], char *env[])
 // {

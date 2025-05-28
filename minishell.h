@@ -17,6 +17,7 @@
 #include<fcntl.h>
 #include<limits.h>
 
+
 int *heredoc_opener(void);
 char *random_file_name(void);
 char *random_dir(void);

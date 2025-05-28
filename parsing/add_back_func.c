@@ -74,11 +74,10 @@ void	add_cmd_back(t_cmd **lst, t_cmd *new)
 
 int get_or_set(int type, int status)
 {
-	static int exit_status = 0; // hold the value even after function ends
-
-	if (type == SET) //SET
-		exit_status = status; // rje3 dkre hadik kifch dkhlha m3a exit_status;
-	return (exit_status); // always return the current value
+	static int exit_status = 0;
+	if (type == SET)
+		exit_status = status;
+	return (exit_status);
 }
 
 
@@ -89,8 +88,7 @@ int	is_valid_key(char *key)
 	if (!key || (!((key[0] >= 'a' && key[0] <= 'z') || 
 	               (key[0] >= 'A' && key[0] <= 'Z') || 
 	               key[0] == '_')))
-		return (1); // invalid key
-
+		return (1);
 	i = 1;
 	while (key[i] && key[i] != '=')
 	{

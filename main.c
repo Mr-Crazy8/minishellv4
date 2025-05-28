@@ -6,11 +6,13 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/27 12:56:56 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/28 10:54:28 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
 
 int is_builtin(char **args)
 {
@@ -182,11 +184,14 @@ void check_line(t_cmd **command, t_env *env_list, char *env[])
     fd_input = dup(0);
 	fd_output = dup(1);
 	//shlvl(env_list, *command);
-
 	check_here_doc(*command, env_list);
 	if (cmd->pipe_out)
 	{
 		ft_excute_mult_pipe(cmd, env_list, env);
+		dup2(fd_input, 0);
+		dup2(fd_output, 1);
+		close(fd_input);
+		close(fd_output);
 		return ;
 	}
 	else
@@ -235,16 +240,16 @@ void change_back_cmd(t_cmd *cmd)
 	}
 }
 
-void ff()
-{
-    system("leaks minishell");
-}
+// void ff()
+// {
+//     system("leaks minishell");
+// }
 int main(int argc, char *argv[], char *env[])
 {
 
 	// if (isatty(STDERR_FILENO) == 0)
 	// 	return (0);
-	atexit(ff);
+	// atexit(ff);
 	t_token *token_list;
 	t_env *env_struct = NULL;   //// add to the final main
 	int exit_status = 0;

@@ -6,11 +6,13 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 15:22:58 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/26 18:31:08 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/27 15:22:20 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
 
 void ft(char **args, t_env **list) // pipe moust be check and access;;;;*
 {
@@ -19,7 +21,7 @@ void ft(char **args, t_env **list) // pipe moust be check and access;;;;*
     char *path;
     int i= 0;
     char *tmp;
-
+    
     helper = convert_env_list(list);
     path = check_path(list);
     if(!args || !args[0])
@@ -132,6 +134,116 @@ void check_close_red(t_cmd *cmd, t_cmd *prev,  t_env *env)
         }
         ft_redircte(cmd->redirs);
 }
+void handl_si(int sig)
+{
+    ft_putstr_fd("Quit: 3\n", 1);
+    // cmd->data.exit_status = get_or_set(SET, 131);
+    rl_redisplay();
+}
+
+void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
+{
+    pid_t pid;
+    t_cmd *prev = NULL;
+    t_cmd *head = NULL;
+    int last_pid = 0;
+    int status = 0;
+    int last_status = 0;
+
+    head = cmd;
+    pipe_all(cmd);
+
+    while (cmd)
+    {
+        pid = fork();
+        if (pid < 0)
+        {
+            perror("fork");
+            close_all_pipes(head);
+            return;
+        }
+        else if (pid == 0)
+        {
+            signal(SIGINT, SIG_DFL);
+            signal(SIGQUIT, handl_si);
+            if (prev && prev->pipe_out)
+                dup2(prev->fd_pipe[0], 0);
+            if (cmd->pipe_out)
+                dup2(cmd->fd_pipe[1], 1);
+            if(cmd->redirs != NULL)
+                check_close_red(cmd, prev, list_env);
+
+            close_all_pipes(head);
+            if(cmd->redirs == NULL || cmd->redirs->fd != -1)
+                execute_single_command(cmd, list_env, env);
+            printf("{{{{{%d\n", cmd->data.exit_status);
+            last_status = cmd->data.exit_status;
+            exit(cmd->data.exit_status);
+        }
+        if(cmd->next == NULL)
+            last_pid = pid;
+
+        // Parent closes previous pipe ends
+        if (prev && prev->pipe_out)
+        {
+            close(prev->fd_pipe[0]);
+            close(prev->fd_pipe[1]);
+        }
+        prev = cmd;
+        cmd = cmd->next;
+    }
+    close_all_pipes(head);
+        while ((pid = wait(&status)) > 0)
+    {
+        if (pid == last_pid)
+        {
+            if (WIFEXITED(status))
+                last_status = WEXITSTATUS(status);
+            
+            else if (WIFSIGNALED(status))
+            {
+                int sig = WTERMSIG(status);
+                if (sig == SIGQUIT)
+                    ft_putstr_fd("Quit: 3\n", 1);
+                else if (sig == SIGINT)
+                    ft_putstr_fd("\n", 1);
+                last_status = 128 + sig;
+            }
+            printf("...%d\n", last_status);
+        }
+    }
+    // while (wait(&status) > 0)
+    // {
+    //     if (WIFEXITED(status))
+    //         last_status = WEXITSTATUS(status);
+    //     else if (WIFSIGNALED(status))
+    //     {
+    //         int sig = WTERMSIG(status);
+    //         last_status = 128 + sig;
+    //     }
+    // }
+    // Set the exit status to the last command's status
+    // close_all_pipes(head);
+    // pid_t wpid;
+    // while ((pid = waitpid(pid, &status, 0)) > 0)
+    // {
+    //     if (WIFEXITED(status))
+    //     {
+    //         last_status = WEXITSTATUS(status);
+    //     }
+    // }
+    get_or_set(SET, last_status);
+    
+    // // Set the exit status to the last command's status
+    // get_or_set(SET, last_status);
+
+    // while (wait(NULL) > 0)
+    //     ;
+}
+
+
+
+
 // void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
 // {
 //     pid_t pid;
@@ -184,64 +296,73 @@ void check_close_red(t_cmd *cmd, t_cmd *prev,  t_env *env)
 //         ;
 // }
 
-void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
-{
-    pid_t pid;
-    t_cmd *prev = NULL;
-    t_cmd *head = NULL;
-    int status;
-    int last_status = 0;  // To store the exit status of the last command
+// void ft_excute_mult_pipe(t_cmd *cmd, t_env *list_env, char *env[])
+// {
+//     pid_t pid;
+//     t_cmd *prev = NULL;
+//     t_cmd *head = NULL;
+//     int status;
+//     int last_status = 0;  // To store the exit status of the last command
 
-    head = cmd;
-    pipe_all(cmd);
+//     head = cmd;
+//     pipe_all(cmd);
     
-    while (cmd)
-    {
-        pid = fork();
-        if (pid < 0)
-        {
-            perror("fork");
-            close_all_pipes(head);
-            return;
-        }
-        else if (pid == 0)
-        {
-            if (prev && prev->pipe_out)
-                dup2(prev->fd_pipe[0], 0);
-            if (cmd->pipe_out)
-                dup2(cmd->fd_pipe[1], 1);
-            if(cmd->redirs != NULL)
-                check_close_red(cmd, prev, list_env);
+//     while (cmd)
+//     {
+//         pid = fork();
+//         if (pid < 0)
+//         {
+//             perror("fork");
+//             close_all_pipes(head);
+//             return;
+//         }
+//         else if (pid == 0)
+//         {
+//             if (prev && prev->pipe_out)
+//                 dup2(prev->fd_pipe[0], 0);
+//             if (cmd->pipe_out)
+//                 dup2(cmd->fd_pipe[1], 1);
+//             if(cmd->redirs != NULL)
+//                 check_close_red(cmd, prev, list_env);
 
-            close_all_pipes(head);
-            execute_single_command(cmd, list_env, env);
-            exit(cmd->data.exit_status);
-        }
+//             close_all_pipes(head);
+//             execute_single_command(cmd, list_env, env);
+//             exit(cmd->data.exit_status);
+//         }
 
-        // Parent closes previous pipe ends
-        if (prev && prev->pipe_out)
-        {
-            close(prev->fd_pipe[0]);
-            close(prev->fd_pipe[1]);
-        }
+//         // Parent closes previous pipe ends
+//         if (prev && prev->pipe_out)
+//         {
+//             close(prev->fd_pipe[0]);
+//             close(prev->fd_pipe[1]);
+//         }
 
-        prev = cmd;
-        cmd = cmd->next;
-    }
+//         prev = cmd;
+//         cmd = cmd->next;
+//     }
 
-    // Wait for all child processes and get the status of the last one
-    pid_t wpid;
-    while ((wpid = wait(&status)) > 0)
-    {
-        if (WIFEXITED(status))
-        {
-            last_status = WEXITSTATUS(status);
-        }
-    }
+//     // Wait for all child processes and get the status of the last one
+//     pid_t wpid;
+//     while ((wpid = wait(&status)) > 0)
+//     {
+//         if (WIFEXITED(status))
+//         {
+//             last_status = WEXITSTATUS(status);
+//         }
+//     }
     
-    // Set the exit status to the last command's status
-    get_or_set(SET, last_status);
-}
+//     // Set the exit status to the last command's status
+//     get_or_set(SET, last_status);
+// }
+
+
+
+
+
+
+
+
+
 
 
 // // Close all pipes to prevent leaks
