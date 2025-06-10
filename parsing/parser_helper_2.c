@@ -1,5 +1,17 @@
 #include "parsing.h" ///5 func
 
+void process_redir_hp(char *str, int *start , int *i, int *after_operator)
+{
+     if (str[(*start)] == '>' && str[(*i)] == '>')
+        (*i)++;
+    else if (str[(*start)] == '<' && str[(*i)] == '<')
+        (*i)++;
+    (*after_operator) = (*i);
+    while (str[(*i)] == ' ')
+        (*i)++;
+}
+
+
 static char *process_redir(char *str, int *pos)
 {
     int start;
@@ -9,15 +21,7 @@ static char *process_redir(char *str, int *pos)
 
     start = *pos;
     i = start + 1;
-    if (str[start] == '>' && str[i] == '>')
-        i++;
-    else if (str[start] == '<' && str[i] == '<')
-        i++;
-
-    after_operator = i;
-    while (str[i] == ' ')
-        i++;
-
+    process_redir_hp(str, &start, &i, &after_operator);
     if (!str[i] || (str[i] == '>' || str[i] == '<'))
     {
         *pos = after_operator;
@@ -31,7 +35,6 @@ static char *process_redir(char *str, int *pos)
             break;
         i++;
     }
-    
     *pos = i;
     return (ft_substr(str, start, i - start));
 }

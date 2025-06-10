@@ -30,7 +30,7 @@ void	print_env(t_env *env_struct)
 }
 
 
-void print_cmd(t_cmd *cmd_list)    /// this should be deleted in the final work
+void print_cmd(t_cmd *cmd_list)
 {
     t_cmd *tmp;
     int i = 0;
@@ -98,7 +98,6 @@ void print_cmd(t_cmd *cmd_list)    /// this should be deleted in the final work
     }   
 }
 
-
 void print_ambiguous_redir_errors(t_cmd *cmd)
 {
     t_cmd *tmp;
@@ -115,16 +114,11 @@ void print_ambiguous_redir_errors(t_cmd *cmd)
         {
             if (redir->Ambiguous)
             {
-                // Write prefix
                 write(2, prefix, ft_strlen(prefix));
-                
-                // Write original token (or use a placeholder if NULL)
                 if (redir->orig_token)
                     write(2, redir->orig_token, ft_strlen(redir->orig_token));
                 else
                     write(2, "$EMPTY", 6);
-                
-                // Write suffix
                 write(2, suffix, ft_strlen(suffix));
             }
             redir = redir->next;

@@ -159,36 +159,27 @@ char *cmd_extracter_hp_3(char *result, int *result_len, int had_quotes)
     int len;
 
     result[(*result_len)] = '\0';
-    
-    // If the original input had quotes, preserve all spaces
     if (had_quotes)
     {
         final = ft_strdup(result);
         if (!final)
-        {
-            free(result);
-            return NULL;
-        }
+            return (free(result), NULL);
         free(result);
         return (final);
     }
-    
-    // Original trimming logic for unquoted strings only
     trimmed = result;
     while (*trimmed == ' ')
         trimmed++;
     final = ft_strdup(trimmed);
     if (!final)
-    {
-        free(result);
-        return NULL;
-    }
+        return (free(result), NULL);
     len = ft_strlen(final);
     while (len > 0 && final[len-1] == ' ')
         final[--len] = '\0';
     free(result);
     return (final);
 }
+
 
 char *init_cmd_buffer(char *str, int *i, int *result_len, int *quote_state)
 {

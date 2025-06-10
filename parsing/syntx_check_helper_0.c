@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 11:26:07 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/18 17:33:06 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/28 17:23:50 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@ int	check_for_redirection(char *str)
 
 	i = 0;
 	count = 0;
+	int lent;
 	if (str != NULL && strcmp(str, "|") != 0)
 	{
-		while (str[i])
+		lent = ft_strlen(str);
+		while (i <= lent && str[i])
 		{
 			redirection_helper(str, &i, &count);
 			if (str[i] == '>' || str[i] == '<')

@@ -46,34 +46,9 @@ int should_split_arg(char *arg, char *original_arg)
 }
 
 
-// char **split_if_needed(char *str)
-// {
-//     int i = 0;
-//     int count;
-//     char **result;
-//     char *trimmed_str;
-
-//     i = 0;
-//     if (!str || !*str || (!strchr(str, ' ') && !strchr(str, '\t') && !strchr(str, '\n')))
-//         return NULL;
-//     result = ft_split_q(str, ' ');
-//     count = 0;
-//     if (result) 
-//     {
-//         while (result[count])
-//             count++;
-//     }
-    
-//     if (count <= 1) 
-//     {
-//         free_string_array(result);
-//         return NULL;
-//     }
-    
-//     return result;
-// }
 
 // In expand_utils.c, modify split_if_needed function to better handle leading spaces:
+
 char **split_if_needed(char *str)
 {
     int i = 0;
@@ -83,23 +58,13 @@ char **split_if_needed(char *str)
 
     if (!str || !*str)
         return NULL;
-    // printf("=========\n");
-    // printf("str ======= [%s]\n",  str);
-    // Trim leading and trailing spaces for standalone variables
     trimmed_str = ft_strtrim(str, " ");
     if (!trimmed_str)
         return NULL;
-    //  printf("trimmed_str ======= [%s]\n",  str);
-    // Check if it still needs splitting after trimming
     if (!strchr(trimmed_str, ' ') && !strchr(trimmed_str, '\t') && !strchr(trimmed_str, '\n'))
-    {
-        free(trimmed_str);
-        return NULL;
-    }
-    
+        return (free(trimmed_str), NULL);
     result = ft_split_q(trimmed_str, ' ');
     free(trimmed_str);
-    
     count = 0;
     if (result) 
     {
@@ -108,13 +73,12 @@ char **split_if_needed(char *str)
     }
     
     if (count <= 1) 
-    {
-        free_string_array(result);
-        return NULL;
-    }
-    
+        return (free_string_array(result), NULL);
     return result;
 }
+
+
+
 
 void free_string_array(char **array)
 {
@@ -148,9 +112,6 @@ int check_var_quotes(char *orig_arg, char *orig_equals)
         
     return 0;
 }
-
-
-
 
 int check_export_cmd(t_cmd *cmd)
 {
@@ -304,7 +265,24 @@ void split_the_rest_helper(char *equals, int should_split, t_cmd *current, int *
     }
 }
 
-
+int  split_the_rest_hp(t_cmd *current, int *should_split, int *i)
+{
+    char *equals;
+    if (!current->args)
+        return 0;
+    if (!current->cmd || strcmp(current->cmd, "export") != 0) 
+    {
+        (*i) = 0;
+        while (current->args && current->args[(*i)]) 
+        {
+            equals = strchr(current->args[(*i)], '=');
+            split_the_rest_helper(equals, (*should_split), current, &(*i));
+            (*i)++;
+        }
+        return 1;
+    }
+    return 0;
+}
 
 void split_the_rest(t_cmd *current, int should_split, int had_removed_var)
 {
@@ -312,19 +290,8 @@ void split_the_rest(t_cmd *current, int should_split, int had_removed_var)
     char *equals;
     int arg_should_split;
 
-    if (!current->args)
+    if (split_the_rest_hp(current, &should_split, &i))
         return;
-    if (!current->cmd || strcmp(current->cmd, "export") != 0) 
-    {
-        i = 0;
-        while (current->args && current->args[i]) 
-        {
-            equals = strchr(current->args[i], '=');
-            split_the_rest_helper(equals, should_split, current, &i);
-            i++;
-        }
-        return;
-    }
     i = 1; 
     while (current->args && current->args[i]) 
     {
@@ -333,23 +300,17 @@ void split_the_rest(t_cmd *current, int should_split, int had_removed_var)
             arg_should_split = 1;
         else if (!equals && current->args_befor_quotes_remover && i < ft_lint(current->args_befor_quotes_remover) && 
             current->args_befor_quotes_remover[i] && strchr(current->args_befor_quotes_remover[i], '$')) 
-            {
             arg_should_split = 1; 
-        }
         else if (current->args_befor_quotes_remover && i < ft_lint(current->args_befor_quotes_remover)) 
-        {
-            arg_should_split = should_split_arg(
-                current->args[i], 
-                current->args_befor_quotes_remover[i]
-            );
-        } else {
+            arg_should_split = should_split_arg(current->args[i], current->args_befor_quotes_remover[i]);
+        else
             arg_should_split = should_split_arg(current->args[i], NULL);
-        }
-        
         split_the_rest_helper(equals, arg_should_split, current, &i);
         i++;
     }
 }
+
+
 
 void cmd_splitting(t_cmd *cmd_list )
 {

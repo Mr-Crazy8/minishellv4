@@ -32,37 +32,38 @@ int expand_handle_helper0(t_exp_helper *expand)
 	return (0);
 }
 
-int ensure_buffer_space(t_exp_helper *expand, size_t additional_needed)
+int ensure_buffer_space_hp(t_exp_helper *expand)
 {
-	if (!expand->buffer_size)
+    if (!expand->buffer_size)
 	{
 		size_t original_len = strlen(expand->original);
 		if (original_len > SIZE_MAX / 2 - 1024)
 		{
-			fprintf(stderr, "minishell: memory allocation failed: input too large\n");
+            write(2, "minishell: memory allocation failed: input too large\n" , 54);
 			return (0);
 		}
 		expand->buffer_size = original_len * 2 + 1024;
 	}
+    return 1;
+}
+int ensure_buffer_space(t_exp_helper *expand, size_t additional_needed)
+{
+    char *new_buffer;
+    size_t new_size;
 
+    if (!ensure_buffer_space_hp(expand))
+        return (0);
 	if (expand->j + additional_needed >= expand->buffer_size)
 	{
-		size_t new_size = expand->buffer_size * 2;
+		new_size = expand->buffer_size * 2;
 		if (new_size < expand->j + additional_needed + 1)
 			new_size = expand->j + additional_needed + 1024;
-
-		// if (new_size > MAX_BUFFER_SIZE || new_size < expand->buffer_size)
-		// {
-		// 	fprintf(stderr, "minishell: memory allocation failed: buffer size too large\n");
-		// 	return (0);
-		// }
-		char *new_buffer = calloc(1, new_size);
+		new_buffer = calloc(1, new_size);
 		if (!new_buffer)
 		{
-			fprintf(stderr, "minishell: memory allocation failed\n");
+            write(2, "minishell: memory allocation failed\n", 37);
 			exit(1);
-		}
-
+        }
 		if (expand->expanded)
 		{
 			memcpy(new_buffer, expand->expanded, expand->j);
@@ -73,6 +74,7 @@ int ensure_buffer_space(t_exp_helper *expand, size_t additional_needed)
 	}
 	return (1);
 }
+
 
 int helper3(t_exp_helper *expand, int exit_status, int pipe_out)
 {
@@ -276,6 +278,22 @@ int expand_handle_helper1(t_exp_helper *expand, int exit_status, t_env *env, int
     return (0);
 }
 
+void  process_string_hp(t_exp_helper *expand)
+{
+    if (expand->expanded)
+    {
+	    expand->expanded[expand->j] = '\0';
+        char *trim = ft_strtrim(expand->expanded, " ");
+        if (!trim)
+        {
+            expand->expanded = NULL;
+            return;
+        }
+        free(expand->expanded);
+        expand->expanded = trim;
+    }
+}
+
 void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status, int pipe_out)
 {
 	if (!expand_fill_str(expand, str))
@@ -283,8 +301,6 @@ void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status
 		expand->expanded = NULL;
 		return;
 	}
-
-
 	while (expand->original[expand->i])
 	{
 		if (!expand_handle_helper0(expand) && !expand_handle_helper1(expand, exit_status, env, pipe_out))
@@ -298,21 +314,7 @@ void process_string(char *str, t_exp_helper *expand, t_env *env, int exit_status
 			expand->expanded[expand->j++] = expand->original[expand->i++];
 		}
 	}
-
-	if (expand->expanded)
-    {
-	    expand->expanded[expand->j] = '\0';
-        char *trim = ft_strtrim(expand->expanded, " ");
-        if (!trim)
-        {
-            expand->expanded = NULL;
-            return;
-
-        }
-        free(expand->expanded);
-        expand->expanded = trim;
-    }
-
+    process_string_hp(expand);
 }
 
 int pls_conter_helper(char *str, int *pls_count, int *j, int *i)

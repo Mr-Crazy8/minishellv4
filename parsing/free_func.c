@@ -1,4 +1,15 @@
 #include "parsing.h"
+// void free_split_str(char **split_str)
+// {
+//     int j;
+
+//     j = 0;
+//     if (!split_str)  // Add this NULL check
+//         return;
+//     while (split_str[j])
+//         free(split_str[j++]);
+//     free(split_str);
+// }
 
 char	**free_split(char **split, size_t j)
 {
@@ -51,14 +62,3 @@ char **free_split_q(char **split, size_t j)
 }
 
 
-
-
-void free_split_str(char **split_str)
-{
-    int j;
-
-    j = 0;
-    while (split_str[j])
-        free(split_str[j++]);
-    free(split_str);
-}

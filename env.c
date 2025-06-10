@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 11:48:53 by anel-men          #+#    #+#             */
-/*   Updated: 2025/05/28 10:53:27 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/28 11:08:15 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ t_env *env_maker(char *env[], t_env **env_struct)
 				*env_struct = NULL;
 				return NULL;
 			}
-            ft_lstadd_back_env(env_struct,  env_node_maker(split));
+            ft_lstadd_back_env(env_struct,  new_node);
         }
         i++;
     }

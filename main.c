@@ -6,7 +6,7 @@
 /*   By: anel-men <anel-men@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:07:21 by ayoakouh          #+#    #+#             */
-/*   Updated: 2025/05/28 10:54:28 by anel-men         ###   ########.fr       */
+/*   Updated: 2025/05/28 17:24:45 by anel-men         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,6 @@ void check_here_doc(t_cmd *cmd, t_env *env)
 		
 		tmp = tmp->next;
 	}
-	
 }
 
 
@@ -309,7 +308,7 @@ int main(int argc, char *argv[], char *env[])
 			exit_status = cmd->data.exit_status;
 			//printf("exit_status number two  ====================> %d\n", cmd->data.exit_status);
 			//exit_status = get_or_set(GET, 0);
-			free_cmd_list(cmd);
+			//free_cmd_list(cmd);
 			//debug_print_cmd(cmd);
 		}
 		else
